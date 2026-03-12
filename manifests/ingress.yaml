@@ -26,3 +26,14 @@ spec:
             name: demo-v1
             port:
               number: 80
+
+  - host: v2.local
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: demo-v2
+            port:
+              number: 80
