@@ -103,6 +103,7 @@ curl http://app.localdev.me
 Ajouter le repo Helm :
 
 ```bash
+sudo snap install helm --classic
 helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
 helm repo update
 ```
@@ -110,9 +111,7 @@ helm repo update
 Installer le stack :
 
 ```bash
-helm install prom prometheus-community/kube-prometheus-stack \
-  -n monitoring --create-namespace \
-  -f monitoring-values.yaml
+helm install prom prometheus-community/kube-prometheus-stack -n monitoring --create-namespace
 ```
 
 Vérifier :
@@ -146,9 +145,8 @@ Identifiants par défaut :
 ---
 
 # 🛠️ 8. Dashboard personnalisé (Cluster Overview)
-
-Un dashboard personnalisé sera ajouté prochainement (JSON à venir).  
-Il inclura :
+  
+Il inclut :
 
 - CPU cluster  
 - RAM cluster  
@@ -176,9 +174,7 @@ kubernetes-kind-ha-lab/
 ├── ingress-nginx.yaml
 ├── app-v1.yaml
 ├── app-v2.yaml
-├── service.yaml
 ├── ingress.yaml
-├── monitoring-values.yaml
 └── README.md
 ```
 
