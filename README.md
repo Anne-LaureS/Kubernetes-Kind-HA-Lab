@@ -175,6 +175,3 @@ kubernetes-kind-ha-lab/
 ├── ingress.yaml
 └── README.md
 ```
-
----
-
