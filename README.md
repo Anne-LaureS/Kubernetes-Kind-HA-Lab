@@ -171,10 +171,21 @@ kind delete cluster --name kind-ha
 
 ```
 kubernetes-kind-ha-lab/
-├── kind-config.yaml
-├── ingress-nginx.yaml
-├── app-v1.yaml
-├── app-v2.yaml
-├── ingress.yaml
+├── app/
+│   ├── v1/
+│           ├──index.html
+│           ├── Dockerfile
+│   └── v2/
+│           ├──index.html
+│           ├── Dockerfile
+├── manifests/
+│   ├── configmap-v1.yaml
+│   ├── configmap-v2.yaml
+│   ├── demo-v1.yaml
+│   ├── demo-v2.yaml
+│   ├── hpa-demo-v1.yaml
+│   ├── hpa-v2.yaml
+│    └── ingress.yaml
+│  
 └── README.md
 ```
