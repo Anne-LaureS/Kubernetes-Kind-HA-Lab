@@ -1,8 +1,7 @@
 # <img src="https://raw.githubusercontent.com/kubernetes/kubernetes/master/logo/logo.png" width="28" /> Kubernetes Kind HA Lab
 
 ---
-
-# 📘 Kubernetes Kind HA Lab  
+  
 ### *Cluster multi‑nœuds, ingress, déploiements v1/v2, services et monitoring complet*
 
 Ce projet met en place un environnement Kubernetes local **hautement reproductible**, basé sur **kind** (Kubernetes in Docker), avec :
@@ -13,7 +12,7 @@ Ce projet met en place un environnement Kubernetes local **hautement reproductib
 - un **Service** + **Ingress** pour exposer l’app  
 - un **stack de monitoring complet** (Prometheus, Grafana, Alertmanager) via kube‑prometheus‑stack  
 
-Ce lab est conçu pour l’apprentissage, l’expérimentation et la démonstration de concepts Kubernetes dans un environnement maîtrisé.
+Ce lab est conçu pour l’expérimentation et la démonstration de concepts Kubernetes dans un environnement maîtrisé.
 
 ---
 
@@ -86,7 +85,6 @@ kubectl -n ingress-nginx get pods
 ```bash
 kubectl apply -f app-v1.yaml
 kubectl apply -f app-v2.yaml
-kubectl apply -f service.yaml
 kubectl apply -f ingress.yaml
 ```
 
