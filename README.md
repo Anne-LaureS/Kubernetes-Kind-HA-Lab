@@ -1,5 +1,8 @@
 # <img src="https://raw.githubusercontent.com/kubernetes/kubernetes/master/logo/logo.png" width="28" /> Kubernetes Kind HA Lab
 
+![Kubernetes](https://img.shields.io/badge/Kubernetes-326CE5?logo=kubernetes&logoColor=white)
+![kind](https://img.shields.io/badge/kind-3D3D3D?logo=kubernetes&logoColor=white)
+
 ---
   
 ### *Cluster multi‑nœuds, ingress, déploiements v1/v2, services et monitoring complet*
