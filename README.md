@@ -75,8 +75,8 @@ kubernetes-kind-ha-lab/
 ├── scripts/
 │    ├── deploy-grafana.sh
 ├── .github/
-│      └── workflows/
-│      └── grafana-deploy.yml
+│       ├── workflows/
+│       ├── grafana-deploy.yml
 ├── manifests/
 │   ├── configmap-v1.yaml
 │   ├── configmap-v2.yaml
@@ -220,16 +220,19 @@ kubernetes-kind-ha-lab/
 ├── grafana/
 |   ├── dashboard.json
 |   ├── alerts/
-|   │     ├── cpu-cluster.json
-|   │     ├── ram-cluster.json
-|   │     ├── latency-p95.json
-|   │     ├── http-rps.json
+|         ├── cpu-cluster.json
+|         ├── ram-cluster.json
+|         ├── latency-p95.json
+|         ├── http-rps.json
 |   ├── contact-points/
-|   │     └── email.json
+|         └── email.json
 |   └── notification-policies/
 |         └── default.json
 └── scripts/
-       └── deploy-grafana.sh/ 
+|      └── deploy-grafana.sh/
+├── .github/
+│       ├── workflows/
+│       ├── grafana-deploy.yml
 ```
 
 ---
