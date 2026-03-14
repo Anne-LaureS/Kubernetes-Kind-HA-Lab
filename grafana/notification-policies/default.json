@@ -1,0 +1,6 @@
+{
+  "orgId": 1,
+  "receiver": "email-alerts",
+  "group_by": ["alertname"],
+  "routes": []
+}
