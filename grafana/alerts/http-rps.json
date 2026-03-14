@@ -1,0 +1,24 @@
+{
+  "title": "HTTP Requests High",
+  "condition": "C",
+  "data": [
+    {
+      "refId": "A",
+      "datasourceUid": "prometheus",
+      "model": {
+        "expr": "sum(rate(nginx_ingress_controller_requests[1m]))",
+        "refId": "A"
+      }
+    },
+    {
+      "refId": "C",
+      "datasourceUid": "-100",
+      "model": {
+        "type": "threshold",
+        "thresholds": [{ "value": 400, "color": "red" }]
+      }
+    }
+  ],
+  "for": "2m",
+  "labels": { "severity": "warning" }
+}
