@@ -235,6 +235,12 @@ kubernetes-kind-ha-lab/
 │       └── grafana-deploy.yml
 ```
 
+Pour déployer le script Bash afin d'automatiser les dashboards :
+```
+chmod +x scripts/deploy-grafana.sh
+./scripts/deploy-grafana.sh
+```
+
 ---
 
 # 🧹 11. Nettoyage du cluster et des images Docker inutiles
