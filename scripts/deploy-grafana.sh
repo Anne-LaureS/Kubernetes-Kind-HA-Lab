@@ -1,7 +1,7 @@
 #!/bin/bash
 
 GRAFANA_URL="http://127.0.0.1"
-API_KEY=""
+API_KEY="glsa_tpyFVTIvUyyttBRdx6Q80zg63FoeD2dn_3d09b0ed"
 
 echo "🚀 Importing Grafana configuration..."
 
