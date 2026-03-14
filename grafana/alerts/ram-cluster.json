@@ -1,0 +1,27 @@
+{
+  "title": "RAM Cluster High",
+  "condition": "C",
+  "data": [
+    {
+      "refId": "A",
+      "queryType": "timeSeriesQuery",
+      "relativeTimeRange": { "from": 300, "to": 0 },
+      "datasourceUid": "prometheus",
+      "model": {
+        "expr": "sum(container_memory_working_set_bytes{container!=\"\",pod!=\"\"}) / sum(machine_memory_bytes) * 100",
+        "refId": "A"
+      }
+    },
+    {
+      "refId": "C",
+      "datasourceUid": "-100",
+      "model": {
+        "type": "threshold",
+        "refId": "C",
+        "thresholds": [{ "value": 85, "color": "red" }]
+      }
+    }
+  ],
+  "for": "5m",
+  "labels": { "severity": "critical" }
+}
