@@ -128,7 +128,7 @@ kubectl -n monitoring get pods
 ### 🔹 Via Ingress
 
 ```
-http://grafana.localdev.me
+http://localhost:8080
 ```
 
 Identifiants par défaut :
