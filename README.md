@@ -225,8 +225,8 @@ kubernetes-kind-ha-lab/
 |   │     └── email.json
 |   └── notification-policies/
 |         └── default.json
-├── scripts/
-│      └── deploy-grafana.sh/ 
+└── scripts/
+       └── deploy-grafana.sh/ 
 ```
 
 ---
