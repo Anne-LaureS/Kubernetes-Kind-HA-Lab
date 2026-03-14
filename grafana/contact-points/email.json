@@ -1,0 +1,7 @@
+{
+  "name": "email-alerts",
+  "type": "email",
+  "settings": {
+    "addresses": "ton.email@domaine.com"
+  }
+}
