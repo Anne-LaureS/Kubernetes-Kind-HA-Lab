@@ -1,6 +1,6 @@
 #!/bin/bash
 
-GRAFANA_URL="http://127.0.0.1"
+GRAFANA_URL="http://127.0.0.1:3000"
 API_KEY="glsa_tpyFVTIvUyyttBRdx6Q80zg63FoeD2dn_3d09b0ed"
 
 echo "🚀 Importing Grafana configuration..."
@@ -45,4 +45,4 @@ for file in grafana/alerts/*.json; do
     --data-binary @"$file"
 done
 
-echo "✅ All Grafana configuration imported successfully!"
+echo "✅ Done!"
