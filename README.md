@@ -46,7 +46,6 @@ Ce lab est conçu pour l’expérimentation et la démonstration de concepts Kub
 - kubectl  
 - KinD  
 - Helm  
-- VS Code recommandé
 - WSL Ubuntu
 
 ---
