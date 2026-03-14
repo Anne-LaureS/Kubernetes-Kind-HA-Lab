@@ -42,7 +42,7 @@ Ce lab est conçu pour l’expérimentation et la démonstration de concepts Kub
 
 # 🧰 2. Prérequis
 
-- Docker Desktop  
+- Docker Desktop  (WSL Integration -> Ubuntu activé)
 - kubectl  
 - KinD  
 - Helm  
@@ -57,13 +57,13 @@ Le fichier `kind-config.yaml` définit un cluster multi‑nœuds.
 Créer le cluster :
 
 ```bash
-kind create cluster --config kind-config.yaml
+kind create cluster --name ha-cluster --config kind-config.yaml
 ```
 
 Vérifier :
 
 ```bash
-kubectl get nodes -o wide
+kubectl get nodes
 ```
 
 ---
@@ -71,18 +71,29 @@ kubectl get nodes -o wide
 # 🌐 4. Installation de l’Ingress NGINX
 
 ```bash
-kubectl apply -f ingress-nginx.yaml
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/kind/deploy.yaml
 ```
 
 Vérification :
 
 ```bash
-kubectl -n ingress-nginx get pods
+kubectl get pods -n ingress-nginx
+kubectl get svc -n ingress-nginx
 ```
 
 ---
 
-# 📦 5. Déploiement des applications v1 et v2
+# 5. Cloner le repository GitHub dans WSL
+
+```bash
+cd ~
+sudo git clone https://github.com/Anne-LaureS/kubernetes-kind-ha-lab.git
+cd kubernetes-kind-ha-lab
+```
+
+---
+
+# 📦 6. Déploiement des applications v1 et v2
 
 ```bash
 kubectl apply -f app-v1.yaml
@@ -172,10 +183,10 @@ kind delete cluster --name kind-ha
 kubernetes-kind-ha-lab/
 ├── app/
 │   ├── v1/
-│           ├──index.html
+│           ├── index.html
 │           ├── Dockerfile
 │   └── v2/
-│           ├──index.html
+│           ├── index.html
 │           ├── Dockerfile
 ├── manifests/
 │   ├── configmap-v1.yaml
