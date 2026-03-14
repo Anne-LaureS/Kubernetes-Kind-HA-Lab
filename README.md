@@ -21,7 +21,7 @@ Ce lab est conçu pour l’expérimentation et la démonstration de concepts Kub
 
 # 🏗️ 1. Architecture du projet
 
-### 🔹 Cluster kind HA
+### 🔹 Cluster KinD HA
 - 1 node **control-plane**  
 - 2 nodes **workers**  
 - réseau Docker interne  
@@ -44,14 +44,14 @@ Ce lab est conçu pour l’expérimentation et la démonstration de concepts Kub
 
 - Docker Desktop  
 - kubectl  
-- kind  
-- helm  
+- KinD  
+- Helm  
 - VS Code recommandé
 - WSL Ubuntu
 
 ---
 
-# 🚀 3. Création du cluster kind HA
+# 🚀 3. Création du cluster KinD HA
 
 Le fichier `kind-config.yaml` définit un cluster multi‑nœuds.
 
