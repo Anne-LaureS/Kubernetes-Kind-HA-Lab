@@ -1,0 +1,34 @@
+{
+  "title": "CPU Cluster High",
+  "condition": "C",
+  "data": [
+    {
+      "refId": "A",
+      "queryType": "timeSeriesQuery",
+      "relativeTimeRange": { "from": 300, "to": 0 },
+      "datasourceUid": "prometheus",
+      "model": {
+        "expr": "sum(rate(container_cpu_usage_seconds_total{container!=\"\",pod!=\"\"}[5m])) / sum(machine_cpu_cores) * 100",
+        "interval": "",
+        "legendFormat": "",
+        "refId": "A"
+      }
+    },
+    {
+      "refId": "C",
+      "queryType": "",
+      "datasourceUid": "-100",
+      "model": {
+        "type": "threshold",
+        "refId": "C",
+        "thresholds": [{ "value": 85, "color": "red" }]
+      }
+    }
+  ],
+  "noDataState": "NoData",
+  "execErrState": "Error",
+  "for": "5m",
+  "annotations": {},
+  "labels": { "severity": "critical" },
+  "alertRuleTags": {}
+}
