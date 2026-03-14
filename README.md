@@ -7,7 +7,7 @@
   
 ### *Cluster multi‑nœuds, ingress, déploiements v1/v2, services et monitoring complet*
 
-Ce projet met en place un environnement Kubernetes local **hautement reproductible**, basé sur **KinD** (Kubernetes in Docker), avec :
+Ce projet met en place un environnement Kubernetes local **reproductible**, basé sur **KinD** (Kubernetes in Docker), avec :
 
 - un **cluster HA** (1 control-plane + 2 workers)  
 - un **Ingress NGINX** fonctionnel  
