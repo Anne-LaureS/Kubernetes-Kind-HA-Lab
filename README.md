@@ -114,7 +114,7 @@ curl http://app.localdev.me
 
 ---
 
-# 📊 6. Installation du monitoring (kube‑prometheus‑stack)
+# 📊 7. Installation du monitoring (kube‑prometheus‑stack)
 
 Ajouter le repo Helm :
 
@@ -138,7 +138,7 @@ kubectl -n monitoring get pods
 
 ---
 
-# 📈 7. Accès à Grafana
+# 📈 8. Accès à Grafana
 
 ### 🔹 Via Ingress
 
@@ -160,7 +160,7 @@ Identifiants par défaut :
 
 ---
 
-# 🛠️ 8. Dashboard personnalisé (Cluster Overview)
+# 🛠️ 9. Dashboard personnalisé (Cluster Overview)
   
 Il inclut :
 
@@ -174,7 +174,7 @@ Il inclut :
 
 ---
 
-# 🧹 9. Nettoyage du cluster
+# 🧹 10. Nettoyage du cluster
 
 ```bash
 kind delete cluster --name kind-ha
@@ -182,7 +182,7 @@ kind delete cluster --name kind-ha
 
 ---
 
-# 📚 10. Structure du repo
+# 📚 11. Structure du repo
 
 ```
 kubernetes-kind-ha-lab/
