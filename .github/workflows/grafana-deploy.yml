@@ -1,0 +1,27 @@
+name: Deploy Grafana Configuration
+
+on:
+  push:
+    paths:
+      - "grafana/**"
+      - "scripts/deploy-grafana.sh"
+  workflow_dispatch:
+  schedule:
+    - cron: "0 3 * * *"   # Tous les jours à 03:00
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set execute permission on script
+        run: chmod +x scripts/deploy-grafana.sh
+
+      - name: Run Grafana deployment script
+        env:
+          API_KEY: ${{ secrets.GRAFANA_API_KEY }}
+        run: |
+          ./scripts/deploy-grafana.sh
