@@ -56,11 +56,24 @@ Ce lab est conçu pour l’expérimentation et la démonstration de concepts Kub
 kubernetes-kind-ha-lab/
 ├── app/
 │   ├── v1/
-│           ├── index.html
-│           ├── Dockerfile
+│          ├── index.html
+│          ├── Dockerfile
 │   └── v2/
-│           ├── index.html
-│           ├── Dockerfile
+│          ├── index.html
+│          ├── Dockerfile
+├── grafana/
+│   ├── alerts/
+│          ├──cpu-cluster.json
+│          ├──http-rps.json
+│          ├──latency-p95.json
+│          ├──ram-cluster.json
+│   └── contact-points/
+│          ├──email.json
+│   └── notification-policies/
+│          ├──default.json
+│   └── dashboard.json
+├── scripts/
+│   ├── deploy-grafana.sh/
 ├── manifests/
 │   ├── configmap-v1.yaml
 │   ├── configmap-v2.yaml
@@ -68,7 +81,7 @@ kubernetes-kind-ha-lab/
 │   ├── demo-v2.yaml
 │   ├── hpa-demo-v1.yaml
 │   ├── hpa-v2.yaml
-│    └── ingress.yaml
+│   └── ingress.yaml
 │  
 └── README.md
 ```
