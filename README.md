@@ -76,7 +76,7 @@ kubernetes-kind-ha-lab/
 │    ├── deploy-grafana.sh
 ├── .github/
 │       ├── workflows/
-│       ├── grafana-deploy.yml
+│       └── grafana-deploy.yml
 ├── manifests/
 │   ├── configmap-v1.yaml
 │   ├── configmap-v2.yaml
@@ -232,7 +232,7 @@ kubernetes-kind-ha-lab/
 |      └── deploy-grafana.sh/
 ├── .github/
 │       ├── workflows/
-│       ├── grafana-deploy.yml
+│       └── grafana-deploy.yml
 ```
 
 ---
