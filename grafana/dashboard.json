@@ -1,0 +1,179 @@
+{
+  "dashboard": {
+    "id": null,
+    "title": "Kubernetes – HA Overview (Advanced + Alerts)",
+    "timezone": "utc",
+    "schemaVersion": 39,
+    "version": 1,
+    "overwrite": true,
+
+    "templating": {
+      "list": [
+        {
+          "name": "node",
+          "type": "query",
+          "datasource": "Prometheus",
+          "refresh": 1,
+          "query": "label_values(kubelet_running_pods, node)",
+          "includeAll": false,
+          "multi": false
+        }
+      ]
+    },
+
+    "panels": [
+
+      /* ============================
+         SECTION — CLUSTER
+         ============================ */
+      {
+        "type": "row",
+        "title": "Cluster",
+        "collapsed": false,
+        "gridPos": { "x": 0, "y": 0, "w": 24, "h": 1 }
+      },
+
+      {
+        "type": "stat",
+        "title": "CPU Cluster (%)",
+        "datasource": "Prometheus",
+        "colorMode": "value",
+        "thresholds": {
+          "mode": "absolute",
+          "steps": [
+            { "color": "green", "value": null },
+            { "color": "orange", "value": 70 },
+            { "color": "red", "value": 85 }
+          ]
+        },
+        "targets": [
+          {
+            "expr": "sum(rate(container_cpu_usage_seconds_total{container!=\"\",pod!=\"\"}[5m])) / sum(machine_cpu_cores) * 100"
+          }
+        ],
+        "gridPos": { "x": 0, "y": 1, "w": 6, "h": 4 }
+      },
+
+      {
+        "type": "stat",
+        "title": "RAM Cluster (%)",
+        "datasource": "Prometheus",
+        "colorMode": "value",
+        "thresholds": {
+          "mode": "absolute",
+          "steps": [
+            { "color": "green", "value": null },
+            { "color": "orange", "value": 70 },
+            { "color": "red", "value": 85 }
+          ]
+        },
+        "targets": [
+          {
+            "expr": "sum(container_memory_working_set_bytes{container!=\"\",pod!=\"\"}) / sum(machine_memory_bytes) * 100"
+          }
+        ],
+        "gridPos": { "x": 6, "y": 1, "w": 6, "h": 4 }
+      },
+
+      /* ============================
+         SECTION — NODES
+         ============================ */
+      {
+        "type": "row",
+        "title": "Nodes",
+        "collapsed": false,
+        "gridPos": { "x": 0, "y": 5, "w": 24, "h": 1 }
+      },
+
+      {
+        "type": "graph",
+        "title": "CPU par Node (%)",
+        "datasource": "Prometheus",
+        "lines": true,
+        "linewidth": 2,
+        "targets": [
+          {
+            "expr": "sum(rate(container_cpu_usage_seconds_total{container!=\"\",pod!=\"\"}[5m])) by (node) / sum(machine_cpu_cores) by (node) * 100"
+          }
+        ],
+        "gridPos": { "x": 0, "y": 6, "w": 12, "h": 6 }
+      },
+
+      {
+        "type": "graph",
+        "title": "RAM par Node (%)",
+        "datasource": "Prometheus",
+        "lines": true,
+        "linewidth": 2,
+        "targets": [
+          {
+            "expr": "sum(container_memory_working_set_bytes{container!=\"\",pod!=\"\"}) by (node) / sum(machine_memory_bytes) by (node) * 100"
+          }
+        ],
+        "gridPos": { "x": 12, "y": 6, "w": 12, "h": 6 }
+      },
+
+      {
+        "type": "graph",
+        "title": "Pods par Node",
+        "datasource": "Prometheus",
+        "lines": true,
+        "linewidth": 2,
+        "targets": [
+          {
+            "expr": "kubelet_running_pods"
+          }
+        ],
+        "gridPos": { "x": 0, "y": 12, "w": 24, "h": 6 }
+      },
+
+      /* ============================
+         SECTION — INGRESS
+         ============================ */
+      {
+        "type": "row",
+        "title": "Ingress",
+        "collapsed": false,
+        "gridPos": { "x": 0, "y": 18, "w": 24, "h": 1 }
+      },
+
+      {
+        "type": "graph",
+        "title": "Latence Ingress P95",
+        "datasource": "Prometheus",
+        "lines": true,
+        "linewidth": 2,
+        "thresholds": [
+          { "color": "green", "value": 0 },
+          { "color": "orange", "value": 0.3 },
+          { "color": "red", "value": 0.6 }
+        ],
+        "targets": [
+          {
+            "expr": "histogram_quantile(0.95, sum(rate(nginx_ingress_controller_request_duration_seconds_bucket[5m])) by (le))"
+          }
+        ],
+        "gridPos": { "x": 0, "y": 19, "w": 24, "h": 6 }
+      },
+
+      {
+        "type": "graph",
+        "title": "Requêtes HTTP (RPS)",
+        "datasource": "Prometheus",
+        "lines": true,
+        "linewidth": 2,
+        "thresholds": [
+          { "color": "green", "value": 0 },
+          { "color": "orange", "value": 200 },
+          { "color": "red", "value": 400 }
+        ],
+        "targets": [
+          {
+            "expr": "sum(rate(nginx_ingress_controller_requests[1m]))"
+          }
+        ],
+        "gridPos": { "x": 0, "y": 25, "w": 24, "h": 6 }
+      }
+    ]
+  }
+}
