@@ -195,7 +195,24 @@ Il inclut :
 - RAM par node  
 - Pods par node  
 - Latence Ingress P95  
-- Requêtes HTTP  
+- Requêtes HTTP
+
+### 🔹 Structure du dossier Grafana pour automatiser les Dashboards 
+
+```
+/grafana
+   ├── dashboard.json
+   ├── alerts/
+   │     ├── cpu-cluster.json
+   │     ├── ram-cluster.json
+   │     ├── latency-p95.json
+   │     ├── http-rps.json
+   ├── contact-points/
+   │     └── email.json
+   ├── notification-policies/
+   │     └── default.json
+   └── README.md
+```
 
 ---
 
