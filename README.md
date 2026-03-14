@@ -209,9 +209,9 @@ Il inclut :
    │     ├── http-rps.json
    ├── contact-points/
    │     └── email.json
-   ├── notification-policies/
-   │     └── default.json
-   └── README.md
+   └── notification-policies/
+         └── default.json
+   
 ```
 
 ---
