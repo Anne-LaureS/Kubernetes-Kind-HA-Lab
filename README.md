@@ -96,6 +96,11 @@ cd kubernetes-kind-ha-lab
 # 📦 6. Déploiement des applications v1 et v2
 
 ```bash
+docker build -t demo:v1 app/v1
+kind load docker-image demo:v1 --name ha-cluster
+kubectl label node ha-cluster-control-plane ingress-ready=true
+kubectl get pods -l app=demo-v1
+
 kubectl apply -f app-v1.yaml
 kubectl apply -f app-v2.yaml
 kubectl apply -f ingress.yaml
