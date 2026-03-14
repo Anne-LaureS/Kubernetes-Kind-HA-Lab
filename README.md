@@ -73,7 +73,10 @@ kubernetes-kind-ha-lab/
 │          ├──default.json
 │   └── dashboard.json
 ├── scripts/
-│   ├── deploy-grafana.sh/
+│    ├── deploy-grafana.sh
+├── .github/
+│      └── workflows/
+│      └── grafana-deploy.yml
 ├── manifests/
 │   ├── configmap-v1.yaml
 │   ├── configmap-v2.yaml
