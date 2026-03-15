@@ -1,37 +1,38 @@
 {
-  "title": "CPU Cluster",
-  "condition": "A",
+  "title": "CPU Cluster High",
+  "condition": "C",
   "folderUID": "general",
 
   "data": [
     {
       "refId": "A",
-      "queryType": "timeSeriesQuery",
-      "relativeTimeRange": {
-        "from": 600,
-        "to": 0
-      },
       "datasourceUid": "prometheus",
       "model": {
-        "expr": "sum(rate(container_cpu_usage_seconds_total{container!=\"\",pod!=\"\"}[5m])) / sum(machine_cpu_cores) * 100",
-        "interval": "",
-        "legendFormat": "CPU Cluster (%)",
+        "expr": "sum(rate(container_cpu_usage_seconds_total{container!=\"\",pod!=\"\"}[5m]))",
         "refId": "A"
+      }
+    },
+    {
+      "refId": "C",
+      "datasourceUid": "-100",
+      "model": {
+        "type": "threshold",
+        "thresholds": [
+          { "value": 80, "color": "red" }
+        ]
       }
     }
   ],
 
+  "for": "2m",
+  "interval": "10s",
+
   "noDataState": "NoData",
   "execErrState": "Error",
 
-  "for": "5m",
-  "interval": "10s",
+  "labels": { "severity": "critical" },
 
   "annotations": {
     "summary": "CPU cluster usage too high"
-  },
-
-  "labels": {
-    "severity": "warning"
   }
 }
