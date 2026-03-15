@@ -239,6 +239,7 @@ Pour déployer le script Bash afin d'automatiser les dashboards :
 ```
 chmod +x scripts/deploy-grafana.sh
 ./scripts/deploy-grafana.sh
+API_KEY="$API_KEY" ./scripts/deploy-grafana.sh
 ```
 
 ---
