@@ -25,6 +25,7 @@
   "execErrState": "Error",
 
   "for": "5m",
+  "interval": "10s",
 
   "annotations": {
     "summary": "CPU cluster usage too high"
