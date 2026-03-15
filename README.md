@@ -54,6 +54,7 @@ Ce lab est conçu pour l’expérimentation et la démonstration de concepts Kub
 
 ```
 kubernetes-kind-ha-lab/
+├── kind-config.yaml
 ├── app/
 │   ├── v1/
 │          ├── index.html
