@@ -2,6 +2,7 @@
   "title": "RAM Cluster High",
   "condition": "C",
   "folderUID": "general",
+
   "data": [
     {
       "refId": "A",
@@ -19,10 +20,23 @@
       "model": {
         "type": "threshold",
         "refId": "C",
-        "thresholds": [{ "value": 85, "color": "red" }]
+        "thresholds": [
+          { "value": 85, "color": "red" }
+        ]
       }
     }
   ],
+
   "for": "5m",
-  "labels": { "severity": "critical" }
+
+  "noDataState": "NoData",
+  "execErrState": "Error",
+
+  "labels": {
+    "severity": "critical"
+  },
+
+  "annotations": {
+    "summary": "RAM cluster usage too high"
+  }
 }
