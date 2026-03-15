@@ -1,6 +1,7 @@
 {
   "title": "HTTP Requests High",
   "condition": "C",
+  "folderUID": "general",
   "data": [
     {
       "refId": "A",
