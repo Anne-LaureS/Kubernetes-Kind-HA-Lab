@@ -81,6 +81,7 @@ kubernetes-kind-ha-lab/
 │       └── grafana-deploy.yml
 ├── monitoring/
 │   ├── elasticsearch.yaml
+│   ├── metricbeat.yaml
 ├── manifests/
 │   ├── configmap-v1.yaml
 │   ├── configmap-v2.yaml
