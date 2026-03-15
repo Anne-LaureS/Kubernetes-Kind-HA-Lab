@@ -19,7 +19,6 @@
       "datasourceUid": "-100",
       "model": {
         "type": "threshold",
-        "refId": "C",
         "thresholds": [
           { "value": 85, "color": "red" }
         ]
@@ -33,9 +32,7 @@
   "noDataState": "NoData",
   "execErrState": "Error",
 
-  "labels": {
-    "severity": "critical"
-  },
+  "labels": { "severity": "critical" },
 
   "annotations": {
     "summary": "RAM cluster usage too high"
