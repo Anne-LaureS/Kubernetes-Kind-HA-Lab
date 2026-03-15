@@ -1,5 +1,6 @@
 {
   "dashboard": {
+    "uid": "k8s_ha_overview",
     "id": null,
     "title": "Kubernetes – HA Overview (Advanced + Alerts)",
     "timezone": "utc",
