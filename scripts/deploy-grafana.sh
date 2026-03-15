@@ -1,6 +1,6 @@
 #!/bin/bash
 
-GRAFANA_URL="http://127.0.0.1:3000"
+GRAFANA_URL="http://127.0.0.1:8080"
 API_KEY="REDACTED_GRAFANA_KEY"
 
 echo "🚀 Importing Grafana configuration..."
