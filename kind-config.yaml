@@ -11,7 +11,3 @@ nodes:
         protocol: TCP
   - role: worker
   - role: worker
-<<<<<<< HEAD
-=======
-
->>>>>>> 3990c85 (Add kind-config.yaml for ingress port mapping)
