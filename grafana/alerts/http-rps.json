@@ -8,7 +8,7 @@
       "refId": "A",
       "datasourceUid": "prometheus",
       "model": {
-        "expr": "sum(rate(nginx_ingress_controller_requests[1m]))",
+        "expr": "sum(rate(nginx_ingress_controller_requests[5m]))",
         "refId": "A"
       }
     },
@@ -18,7 +18,7 @@
       "model": {
         "type": "threshold",
         "thresholds": [
-          { "value": 400, "color": "red" }
+          { "value": 1000, "color": "red" }
         ]
       }
     }
@@ -30,9 +30,7 @@
   "noDataState": "NoData",
   "execErrState": "Error",
 
-  "labels": {
-    "severity": "warning"
-  },
+  "labels": { "severity": "warning" },
 
   "annotations": {
     "summary": "HTTP request rate too high"
