@@ -1,6 +1,6 @@
 #!/bin/bash
 
-GRAFANA_URL="http://127.0.0.1:8080"
+GRAFANA_URL="http://127.0.0.1:9090"
 
 echo "🚀 Importing Grafana configuration..."
 
