@@ -25,7 +25,7 @@
   ],
 
   "for": "2m",
-  "intervalSeconds": "40",
+  "interval": "40s",
 
   "noDataState": "NoData",
   "execErrState": "Error",
