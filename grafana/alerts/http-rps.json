@@ -1,14 +1,20 @@
 {
-  "title": "HTTP Requests High",
-  "condition": "C",
+  "uid": "http_rps",
+  "title": "HTTP RPS High",
   "folderUID": "general",
+  "ruleGroup": "cluster-alerts",
+  "interval": "160s",
+
+  "condition": "C",
 
   "data": [
     {
       "refId": "A",
+      "queryType": "timeSeriesQuery",
+      "relativeTimeRange": { "from": 300, "to": 0 },
       "datasourceUid": "prometheus",
       "model": {
-        "expr": "sum(rate(nginx_ingress_controller_requests[5m]))",
+        "expr": "sum(rate(http_requests_total[5m]))",
         "refId": "A"
       }
     },
@@ -17,6 +23,7 @@
       "datasourceUid": "-100",
       "model": {
         "type": "threshold",
+        "expression": "A",
         "thresholds": [
           { "value": 1000, "color": "red" }
         ]
@@ -24,15 +31,15 @@
     }
   ],
 
-  "for": "2m",
-  "interval": "160s",
-
+  "for": "5m",
   "noDataState": "NoData",
   "execErrState": "Error",
 
-  "labels": { "severity": "warning" },
+  "labels": {
+    "severity": "warning"
+  },
 
   "annotations": {
-    "summary": "HTTP request rate too high"
+    "summary": "HTTP RPS too high"
   }
 }
