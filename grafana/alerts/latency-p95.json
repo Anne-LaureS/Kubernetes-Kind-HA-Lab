@@ -30,9 +30,7 @@
   "noDataState": "NoData",
   "execErrState": "Error",
 
-  "labels": {
-    "severity": "warning"
-  },
+  "labels": { "severity": "warning" },
 
   "annotations": {
     "summary": "Ingress P95 latency too high"
