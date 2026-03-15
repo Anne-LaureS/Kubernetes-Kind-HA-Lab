@@ -1,7 +1,11 @@
 {
+  "uid": "ram_cluster",
   "title": "RAM Cluster High",
-  "condition": "C",
   "folderUID": "general",
+  "ruleGroup": "cluster-alerts",
+  "interval": "40s",
+
+  "condition": "C",
 
   "data": [
     {
@@ -19,6 +23,7 @@
       "datasourceUid": "-100",
       "model": {
         "type": "threshold",
+        "expression": "A",
         "thresholds": [
           { "value": 85, "color": "red" }
         ]
@@ -27,12 +32,12 @@
   ],
 
   "for": "5m",
-  "interval": "40s",
-
   "noDataState": "NoData",
   "execErrState": "Error",
 
-  "labels": { "severity": "critical" },
+  "labels": {
+    "severity": "critical"
+  },
 
   "annotations": {
     "summary": "RAM cluster usage too high"
