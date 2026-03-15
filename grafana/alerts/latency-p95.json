@@ -2,6 +2,7 @@
   "title": "Ingress Latency P95 High",
   "condition": "C",
   "folderUID": "general",
+
   "data": [
     {
       "refId": "A",
@@ -16,10 +17,23 @@
       "datasourceUid": "-100",
       "model": {
         "type": "threshold",
-        "thresholds": [{ "value": 0.6, "color": "red" }]
+        "thresholds": [
+          { "value": 0.6, "color": "red" }
+        ]
       }
     }
   ],
+
   "for": "2m",
-  "labels": { "severity": "warning" }
+
+  "noDataState": "NoData",
+  "execErrState": "Error",
+
+  "labels": {
+    "severity": "warning"
+  },
+
+  "annotations": {
+    "summary": "Ingress P95 latency too high"
+  }
 }
