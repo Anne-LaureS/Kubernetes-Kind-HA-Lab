@@ -1,14 +1,20 @@
 {
-  "title": "Ingress Latency P95 High",
-  "condition": "C",
+  "uid": "latency_p95",
+  "title": "HTTP Latency P95 High",
   "folderUID": "general",
+  "ruleGroup": "cluster-alerts",
+  "interval": "40s",
+
+  "condition": "C",
 
   "data": [
     {
       "refId": "A",
+      "queryType": "timeSeriesQuery",
+      "relativeTimeRange": { "from": 300, "to": 0 },
       "datasourceUid": "prometheus",
       "model": {
-        "expr": "histogram_quantile(0.95, sum(rate(nginx_ingress_controller_request_duration_seconds_bucket[5m])) by (le))",
+        "expr": "histogram_quantile(0.95, sum(rate(http_request_duration_seconds_bucket[5m])) by (le))",
         "refId": "A"
       }
     },
@@ -17,22 +23,23 @@
       "datasourceUid": "-100",
       "model": {
         "type": "threshold",
+        "expression": "A",
         "thresholds": [
-          { "value": 0.6, "color": "red" }
+          { "value": 0.5, "color": "red" }
         ]
       }
     }
   ],
 
-  "for": "2m",
-  "interval": "40s",
-
+  "for": "5m",
   "noDataState": "NoData",
   "execErrState": "Error",
 
-  "labels": { "severity": "warning" },
+  "labels": {
+    "severity": "warning"
+  },
 
   "annotations": {
-    "summary": "Ingress P95 latency too high"
+    "summary": "HTTP P95 latency too high"
   }
 }
