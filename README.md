@@ -79,6 +79,8 @@ kubernetes-kind-ha-lab/
 ├── .github/
 │       ├── workflows/
 │       └── grafana-deploy.yml
+├── monitoring/
+│   ├── elasticsearch.yaml
 ├── manifests/
 │   ├── configmap-v1.yaml
 │   ├── configmap-v2.yaml
