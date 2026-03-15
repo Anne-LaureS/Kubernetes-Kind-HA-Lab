@@ -1,0 +1,64 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: metricbeat-config
+  namespace: elastic
+data:
+  metricbeat.yml: |-
+    metricbeat.modules:
+      - module: elasticsearch
+        metricsets:
+          - node
+          - node_stats
+          - cluster_stats
+          - index
+          - index_recovery
+          - index_summary
+          - shard
+        period: 10s
+        hosts: ["http://elasticsearch.monitoring.svc.cluster.local:9200"]
+
+    output.elasticsearch:
+      hosts: ["http://elasticsearch.monitoring.svc.cluster.local:9200"]
+
+---
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: metricbeat
+  namespace: elastic
+spec:
+  selector:
+    matchLabels:
+      app: metricbeat
+  template:
+    metadata:
+      labels:
+        app: metricbeat
+    spec:
+      serviceAccountName: metricbeat
+      containers:
+        - name: metricbeat
+          image: docker.elastic.co/beats/metricbeat:8.12.0
+          args: ["-e", "-system.hostfs=/hostfs"]
+          securityContext:
+            runAsUser: 0
+          volumeMounts:
+            - name: config
+              mountPath: /usr/share/metricbeat/metricbeat.yml
+              subPath: metricbeat.yml
+            - name: hostfs
+              mountPath: /hostfs
+      volumes:
+        - name: config
+          configMap:
+            name: metricbeat-config
+        - name: hostfs
+          hostPath:
+            path: /
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: metricbeat
+  namespace: elastic
