@@ -6,7 +6,6 @@
     "timezone": "utc",
     "schemaVersion": 39,
     "version": 1,
-
     "templating": {
       "list": [
         {
@@ -20,18 +19,13 @@
         }
       ]
     },
-
     "panels": [
-      /* ============================
-         SECTION — CLUSTER
-         ============================ */
       {
         "type": "row",
         "title": "Cluster",
         "collapsed": false,
         "gridPos": { "x": 0, "y": 0, "w": 24, "h": 1 }
       },
-
       {
         "type": "stat",
         "title": "CPU Cluster (%)",
@@ -52,7 +46,6 @@
         ],
         "gridPos": { "x": 0, "y": 1, "w": 6, "h": 4 }
       },
-
       {
         "type": "stat",
         "title": "RAM Cluster (%)",
@@ -73,17 +66,12 @@
         ],
         "gridPos": { "x": 6, "y": 1, "w": 6, "h": 4 }
       },
-
-      /* ============================
-         SECTION — NODES
-         ============================ */
       {
         "type": "row",
         "title": "Nodes",
         "collapsed": false,
         "gridPos": { "x": 0, "y": 5, "w": 24, "h": 1 }
       },
-
       {
         "type": "graph",
         "title": "CPU par Node (%)",
@@ -97,7 +85,6 @@
         ],
         "gridPos": { "x": 0, "y": 6, "w": 12, "h": 6 }
       },
-
       {
         "type": "graph",
         "title": "RAM par Node (%)",
@@ -111,7 +98,6 @@
         ],
         "gridPos": { "x": 12, "y": 6, "w": 12, "h": 6 }
       },
-
       {
         "type": "graph",
         "title": "Pods par Node",
@@ -125,17 +111,12 @@
         ],
         "gridPos": { "x": 0, "y": 12, "w": 24, "h": 6 }
       },
-
-      /* ============================
-         SECTION — INGRESS
-         ============================ */
       {
         "type": "row",
         "title": "Ingress",
         "collapsed": false,
         "gridPos": { "x": 0, "y": 18, "w": 24, "h": 1 }
       },
-
       {
         "type": "graph",
         "title": "Latence Ingress P95",
@@ -154,7 +135,6 @@
         ],
         "gridPos": { "x": 0, "y": 19, "w": 24, "h": 6 }
       },
-
       {
         "type": "graph",
         "title": "Requêtes HTTP (RPS)",
@@ -175,7 +155,6 @@
       }
     ]
   },
-
   "folderId": 0,
   "overwrite": true
 }
