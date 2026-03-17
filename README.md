@@ -37,7 +37,8 @@ Ce lab est conçu pour l’expérimentation et la démonstration de concepts Kub
 ### 🔹 Observabilité
 - **Prometheus** → collecte des métriques  
 - **Grafana** → visualisation  
-- **Alertmanager** → gestion des alertes  
+- **Alertmanager** → gestion des alertes
+- **Elasticsearch**  
 
 ---
 
