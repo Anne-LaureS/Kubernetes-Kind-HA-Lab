@@ -1,6 +1,6 @@
 #!/bin/bash
 
-GRAFANA_URL="http://127.0.0.1:9090"
+GRAFANA_URL="${GRAFANA_URL:-http://127.0.0.1:8080}"
 
 echo "🚀 Importing Grafana configuration..."
 
@@ -40,10 +40,20 @@ echo "🚨 Importing alert rules..."
 
 for file in grafana/alerts/*.json; do
   echo "   → $file"
-  curl -X POST "$GRAFANA_URL/api/v1/provisioning/alert-rules" \
+  uid=$(grep -o '"uid"[[:space:]]*:[[:space:]]*"[^"]*"' "$file" | head -1 | sed -E 's/.*"([^"]+)"$/\1/')
+  status=$(curl -s -o /tmp/alert-response.json -w "%{http_code}" -X PUT "$GRAFANA_URL/api/v1/provisioning/alert-rules/${uid}" \
     -H "Authorization: Bearer $API_KEY" \
     -H "Content-Type: application/json" \
-    --data-binary @"$file"
+    --data-binary @"$file")
+  if [[ "$status" == "404" ]]; then
+    curl -X POST "$GRAFANA_URL/api/v1/provisioning/alert-rules" \
+      -H "Authorization: Bearer $API_KEY" \
+      -H "Content-Type: application/json" \
+      --data-binary @"$file"
+  else
+    cat /tmp/alert-response.json
+  fi
+  echo ""
 done
 
 echo "✅ Done!"
