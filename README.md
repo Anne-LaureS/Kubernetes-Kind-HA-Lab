@@ -18,6 +18,16 @@ Ce projet met en place un environnement Kubernetes local **reproductible**, bas�
 
 Ce lab est conçu pour l’expérimentation et la démonstration de concepts Kubernetes dans un environnement maîtrisé.
 
+<p align="center">
+  <img src="screenshots/dashboard.png" width="90%" alt="Dashboard Grafana Kubernetes HA Overview" />
+</p>
+<p align="center"><i>Dashboard personnalisé : CPU/RAM cluster et par nœud, pods par nœud, latence Ingress P95.</i></p>
+
+<p align="center">
+  <img src="screenshots/alert-rule.png" width="90%" alt="Règles d'alerte Grafana" />
+</p>
+<p align="center"><i>Règles d'alerte actives (dont les 4 règles custom du repo) avec leur état en direct.</i></p>
+
 ---
 
 # 🏗️ 1. Architecture du projet
