@@ -1,0 +1,15 @@
+# Kubernetes / kind
+kubeconfig
+kubeconfig.yaml
+*.kubeconfig
+
+# Secrets / environnement local
+.env
+.env.*
+
+# Fichiers temporaires
+*.tmp
+
+# OS / éditeur
+.DS_Store
+*.swp
