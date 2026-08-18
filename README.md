@@ -28,6 +28,11 @@ Ce lab est conçu pour l’expérimentation et la démonstration de concepts Kub
 </p>
 <p align="center"><i>Règles d'alerte actives (dont les 4 règles custom du repo) avec leur état en direct.</i></p>
 
+<p align="center">
+  <img src="screenshots/elasticsearch.png" width="90%" alt="Dashboard Elasticsearch Cluster Health" />
+</p>
+<p align="center"><i>Santé d'Elasticsearch (auto-monitoring via Metricbeat) : documents, taille de l'index, JVM heap, CPU.</i></p>
+
 ---
 
 # 🏗️ 1. Architecture du projet
