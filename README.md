@@ -37,7 +37,8 @@ Ce lab est conçu pour l’expérimentation et la démonstration de concepts Kub
 ### 🔹 Observabilité
 - **Prometheus** → collecte des métriques  
 - **Grafana** → visualisation  
-- **Alertmanager** → gestion des alertes  
+- **Alertmanager** → gestion des alertes
+- **Elasticsearch**  
 
 ---
 
@@ -81,6 +82,7 @@ kubernetes-kind-ha-lab/
 │       └── grafana-deploy.yml
 ├── monitoring/
 │   ├── elasticsearch.yaml
+│   ├── metricbeat.yaml
 ├── manifests/
 │   ├── configmap-v1.yaml
 │   ├── configmap-v2.yaml
