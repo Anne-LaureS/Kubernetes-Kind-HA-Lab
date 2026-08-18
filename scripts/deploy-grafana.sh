@@ -5,13 +5,18 @@ GRAFANA_URL="${GRAFANA_URL:-http://127.0.0.1:8081}"
 echo "🚀 Importing Grafana configuration..."
 
 # -------------------------
-# 1. Import Dashboard
+# 1. Import Dashboards
 # -------------------------
-echo "📊 Importing dashboard..."
+echo "📊 Importing dashboards..."
 curl -X POST "$GRAFANA_URL/api/dashboards/db" \
   -H "Authorization: Bearer $API_KEY" \
   -H "Content-Type: application/json" \
   --data-binary @grafana/dashboard.json
+echo ""
+curl -X POST "$GRAFANA_URL/api/dashboards/db" \
+  -H "Authorization: Bearer $API_KEY" \
+  -H "Content-Type: application/json" \
+  --data-binary @grafana/elasticsearch-dashboard.json
 
 # -------------------------
 # 2. Import Contact Points

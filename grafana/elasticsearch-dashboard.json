@@ -1,0 +1,93 @@
+{
+  "dashboard": {
+    "title": "Elasticsearch – Cluster Health",
+    "tags": ["elasticsearch", "metricbeat"],
+    "timezone": "browser",
+    "schemaVersion": 39,
+    "refresh": "30s",
+    "time": { "from": "now-1h", "to": "now" },
+    "panels": [
+      {
+        "id": 1,
+        "title": "Documents (cluster)",
+        "type": "stat",
+        "gridPos": { "h": 6, "w": 6, "x": 0, "y": 0 },
+        "datasource": { "type": "elasticsearch", "uid": "Elasticsearch" },
+        "targets": [
+          {
+            "query": "metricset.name:cluster_stats",
+            "metrics": [
+              { "id": "1", "type": "max", "field": "elasticsearch.cluster.stats.indices.docs.total" }
+            ],
+            "bucketAggs": [
+              { "id": "2", "type": "date_histogram", "field": "@timestamp", "settings": { "interval": "auto" } }
+            ],
+            "timeField": "@timestamp"
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "title": "Taille de l'index (octets)",
+        "type": "stat",
+        "gridPos": { "h": 6, "w": 6, "x": 6, "y": 0 },
+        "datasource": { "type": "elasticsearch", "uid": "Elasticsearch" },
+        "fieldConfig": { "defaults": { "unit": "bytes" }, "overrides": [] },
+        "targets": [
+          {
+            "query": "metricset.name:cluster_stats",
+            "metrics": [
+              { "id": "1", "type": "max", "field": "elasticsearch.cluster.stats.indices.store.size.bytes" }
+            ],
+            "bucketAggs": [
+              { "id": "2", "type": "date_histogram", "field": "@timestamp", "settings": { "interval": "auto" } }
+            ],
+            "timeField": "@timestamp"
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "title": "JVM Heap utilisé (%)",
+        "type": "timeseries",
+        "gridPos": { "h": 8, "w": 12, "x": 0, "y": 6 },
+        "datasource": { "type": "elasticsearch", "uid": "Elasticsearch" },
+        "fieldConfig": { "defaults": { "unit": "percent", "max": 100, "min": 0 }, "overrides": [] },
+        "targets": [
+          {
+            "query": "metricset.name:node_stats",
+            "metrics": [
+              { "id": "1", "type": "avg", "field": "elasticsearch.node.stats.jvm.mem.heap.used.pct" }
+            ],
+            "bucketAggs": [
+              { "id": "2", "type": "date_histogram", "field": "@timestamp", "settings": { "interval": "auto" } }
+            ],
+            "timeField": "@timestamp"
+          }
+        ]
+      },
+      {
+        "id": 4,
+        "title": "CPU du nœud (%)",
+        "type": "timeseries",
+        "gridPos": { "h": 8, "w": 12, "x": 12, "y": 6 },
+        "datasource": { "type": "elasticsearch", "uid": "Elasticsearch" },
+        "fieldConfig": { "defaults": { "unit": "percent", "max": 100, "min": 0 }, "overrides": [] },
+        "targets": [
+          {
+            "query": "metricset.name:node_stats",
+            "metrics": [
+              { "id": "1", "type": "avg", "field": "elasticsearch.node.stats.process.cpu.pct" }
+            ],
+            "bucketAggs": [
+              { "id": "2", "type": "date_histogram", "field": "@timestamp", "settings": { "interval": "auto" } }
+            ],
+            "timeField": "@timestamp"
+          }
+        ]
+      }
+    ]
+  },
+  "folderUid": "",
+  "overwrite": true
+}

@@ -234,6 +234,22 @@ kubectl -n monitoring get pods -l app=elasticsearch
 kubectl -n elastic get pods
 ```
 
+Metricbeat surveille Elasticsearch lui-même (santé cluster, JVM, index) et renvoie ces métriques dans
+Elasticsearch — mais sans source de données Grafana dédiée, ces données restent invisibles. Ajouter la
+datasource :
+
+```bash
+kubectl apply -f monitoring/elasticsearch-datasource.yaml
+```
+
+⚠️ Ne pas fixer de `uid` explicite sur cette datasource dans le manifeste — un `uid` correspondant au nom
+du type (`elasticsearch`) fait échouer le provisioning Grafana (`Datasource provisioning error: data
+source not found`). Laisser Grafana en générer un automatiquement.
+
+Le dashboard **"Elasticsearch – Cluster Health"** (`grafana/elasticsearch-dashboard.json`, importé par
+`deploy-grafana.sh`) affiche : documents et taille de l'index au niveau cluster, utilisation JVM heap et
+CPU du nœud.
+
 ---
 
 # 📈 10. Accès à Grafana
