@@ -143,6 +143,17 @@ kubectl -n ingress-nginx patch service ingress-nginx-controller --type=json -p='
 kubectl apply -f ingress-servicemonitor.yaml
 ```
 
+⚠️ Le manifeste "kind" ne fixe pas le pod du contrôleur sur le nœud `control-plane` — or c'est le seul
+nœud sur lequel `kind-config.yaml` mappe les ports hôte `8080`/`443`. Après un redémarrage/rollout, le
+pod peut être replanifié sur un worker et rendre `http://127.0.0.1:8080` inaccessible
+(`Connection reset by peer`). Fixer explicitement le nœud :
+
+```bash
+kubectl -n ingress-nginx patch deployment ingress-nginx-controller --type=json -p='[
+  {"op": "add", "path": "/spec/template/spec/nodeSelector/kubernetes.io~1hostname", "value": "kind-control-plane"}
+]'
+```
+
 ---
 
 # 6. ♾ Cloner le repository GitHub dans WSL
