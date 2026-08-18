@@ -21,17 +21,6 @@ Ce lab est conçu pour l’expérimentation et la démonstration de concepts Kub
 <p align="center">
   <img src="screenshots/dashboard.png" width="90%" alt="Dashboard Grafana Kubernetes HA Overview" />
 </p>
-<p align="center"><i>Dashboard personnalisé : CPU/RAM cluster et par nœud, pods par nœud, latence Ingress P95.</i></p>
-
-<p align="center">
-  <img src="screenshots/alert-rule.png" width="90%" alt="Règles d'alerte Grafana" />
-</p>
-<p align="center"><i>Règles d'alerte actives (dont les 4 règles custom du repo) avec leur état en direct.</i></p>
-
-<p align="center">
-  <img src="screenshots/elasticsearch.png" width="90%" alt="Dashboard Elasticsearch Cluster Health" />
-</p>
-<p align="center"><i>Santé d'Elasticsearch (auto-monitoring via Metricbeat) : documents, taille de l'index, JVM heap, CPU.</i></p>
 
 ---
 
@@ -67,7 +56,20 @@ Ce lab est conçu pour l’expérimentation et la démonstration de concepts Kub
 
 ---
 
-# 📚 3. Structure du repo
+# 3. ♾ Cloner le repository GitHub dans WSL
+
+Les sections suivantes utilisent des fichiers de ce repo (`kind-config.yaml`, `manifests/`,
+`monitoring/`...) — cloner en premier :
+
+```bash
+cd ~
+git clone https://github.com/Anne-LaureS/kubernetes-kind-ha-lab.git
+cd kubernetes-kind-ha-lab
+```
+
+---
+
+# 📚 4. Structure du repo
 
 ```
 kubernetes-kind-ha-lab/
@@ -119,7 +121,7 @@ kubernetes-kind-ha-lab/
 
 ---
 
-# 🚀 4. Création du cluster KinD HA
+# 🚀 5. Création du cluster KinD HA
 
 Le fichier `kind-config.yaml` définit un cluster multi‑nœuds.
 
@@ -137,7 +139,7 @@ kubectl get nodes
 
 ---
 
-# 🌐 5. Installation de l’Ingress NGINX
+# 🌐 6. Installation de l’Ingress NGINX
 
 ```bash
 kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/kind/deploy.yaml
@@ -174,16 +176,6 @@ pod peut être replanifié sur un worker et rendre `http://127.0.0.1:8080` inacc
 kubectl -n ingress-nginx patch deployment ingress-nginx-controller --type=json -p='[
   {"op": "add", "path": "/spec/template/spec/nodeSelector/kubernetes.io~1hostname", "value": "kind-control-plane"}
 ]'
-```
-
----
-
-# 6. ♾ Cloner le repository GitHub dans WSL
-
-```bash
-cd ~
-git clone https://github.com/Anne-LaureS/kubernetes-kind-ha-lab.git
-cd kubernetes-kind-ha-lab
 ```
 
 ---
@@ -262,11 +254,15 @@ Le dashboard **"Elasticsearch – Cluster Health"** (`grafana/elasticsearch-dash
 `deploy-grafana.sh`) affiche : documents et taille de l'index au niveau cluster, utilisation JVM heap et
 CPU du nœud.
 
+<p align="center">
+  <img src="screenshots/elasticsearch.png" width="90%" alt="Dashboard Elasticsearch Cluster Health" />
+</p>
+
 ---
 
 # 📈 10. Accès à Grafana
 
-Le port hôte `8080` est déjà réservé par `kind-config.yaml` pour l'ingress (voir section 4) — utiliser
+Le port hôte `8080` est déjà réservé par `kind-config.yaml` pour l'ingress (voir section 5) — utiliser
 un autre port local pour Grafana, par exemple `8081` :
 
 ```
@@ -302,17 +298,22 @@ Il inclut :
 - Latence Ingress P95  
 - Requêtes HTTP
 
+<p align="center">
+  <img src="screenshots/alert-rule.png" width="90%" alt="Règles d'alerte Grafana" />
+</p>
+<p align="center"><i>Règles d'alerte actives (dont les 4 règles custom du repo, section suivante) avec leur état en direct.</i></p>
+
 ### 🔹 Automatiser les dashboards
 
 Fichiers concernés : `grafana/` (dashboards, alertes, contact points, notification policies),
 `scripts/deploy-grafana.sh` et `.github/workflows/grafana-deploy.yml` — voir l'arborescence complète en
-section 3.
+section 4.
 
 Pour déployer le script Bash afin d'automatiser les dashboards (nécessite une clé API Grafana et une
 adresse email de notification — `contact-points/email.json` utilise `${ALERT_EMAIL}`) :
 ```bash
 chmod +x scripts/deploy-grafana.sh
-export GRAFANA_URL="http://127.0.0.1:8081"   # doit correspondre au port du port-forward (section 9)
+export GRAFANA_URL="http://127.0.0.1:8081"   # doit correspondre au port du port-forward (section 10)
 export API_KEY="ta-cle-api-grafana"
 export ALERT_EMAIL="ton-email@exemple.com"
 ./scripts/deploy-grafana.sh
