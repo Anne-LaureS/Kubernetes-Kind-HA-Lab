@@ -72,32 +72,36 @@ Ce lab est conçu pour l’expérimentation et la démonstration de concepts Kub
 ```
 kubernetes-kind-ha-lab/
 ├── kind-config.yaml
+├── ingress-servicemonitor.yaml
+├── .gitignore
 ├── app/
 │   ├── v1/
-│          ├── index.html
-│          ├── Dockerfile
+│   │   ├── index.html
+│   │   └── Dockerfile
 │   └── v2/
-│          ├── index.html
-│          ├── Dockerfile
+│       ├── index.html
+│       └── Dockerfile
 ├── grafana/
+│   ├── dashboard.json
+│   ├── elasticsearch-dashboard.json
 │   ├── alerts/
-│          ├──cpu-cluster.json
-│          ├──http-rps.json
-│          ├──latency-p95.json
-│          ├──ram-cluster.json
-│   └── contact-points/
-│          ├──email.json
+│   │   ├── cpu-cluster.json
+│   │   ├── http-rps.json
+│   │   ├── latency-p95.json
+│   │   └── ram-cluster.json
+│   ├── contact-points/
+│   │   └── email.json
 │   └── notification-policies/
-│          ├──default.json
-│   └── dashboard.json
+│       └── default.json
 ├── scripts/
-│    ├── deploy-grafana.sh
+│   └── deploy-grafana.sh
 ├── .github/
-│       ├── workflows/
+│   └── workflows/
 │       └── grafana-deploy.yml
 ├── monitoring/
 │   ├── elasticsearch.yaml
-│   ├── metricbeat.yaml
+│   ├── elasticsearch-datasource.yaml
+│   └── metricbeat.yaml
 ├── manifests/
 │   ├── configmap-v1.yaml
 │   ├── configmap-v2.yaml
@@ -106,7 +110,10 @@ kubernetes-kind-ha-lab/
 │   ├── hpa-demo-v1.yaml
 │   ├── hpa-v2.yaml
 │   └── ingress.yaml
-│  
+├── screenshots/
+│   ├── dashboard.png
+│   ├── alert-rule.png
+│   └── elasticsearch.png
 └── README.md
 ```
 
@@ -295,27 +302,11 @@ Il inclut :
 - Latence Ingress P95  
 - Requêtes HTTP
 
-### 🔹 Structure du dossier Grafana pour automatiser les Dashboards 
+### 🔹 Automatiser les dashboards
 
-```
-kubernetes-kind-ha-lab/
-├── grafana/
-|   ├── dashboard.json
-|   ├── alerts/
-|         ├── cpu-cluster.json
-|         ├── ram-cluster.json
-|         ├── latency-p95.json
-|         ├── http-rps.json
-|   ├── contact-points/
-|         └── email.json
-|   └── notification-policies/
-|         └── default.json
-└── scripts/
-|      └── deploy-grafana.sh/
-├── .github/
-│       ├── workflows/
-│       └── grafana-deploy.yml
-```
+Fichiers concernés : `grafana/` (dashboards, alertes, contact points, notification policies),
+`scripts/deploy-grafana.sh` et `.github/workflows/grafana-deploy.yml` — voir l'arborescence complète en
+section 3.
 
 Pour déployer le script Bash afin d'automatiser les dashboards (nécessite une clé API Grafana et une
 adresse email de notification — `contact-points/email.json` utilise `${ALERT_EMAIL}`) :
