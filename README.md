@@ -104,7 +104,7 @@ Le fichier `kind-config.yaml` définit un cluster multi‑nœuds.
 Créer le cluster :
 
 ```bash
-kind create cluster --name ha-cluster --config kind-config.yaml
+kind create cluster --config kind-config.yaml
 ```
 
 Vérifier :
@@ -128,6 +128,21 @@ kubectl get pods -n ingress-nginx
 kubectl get svc -n ingress-nginx
 ```
 
+Ce manifeste n'active pas les métriques Prometheus par défaut. Pour que les panels "Latence Ingress
+P95" / "Requêtes HTTP (RPS)" du dashboard Grafana affichent des données, il faut les activer et
+appliquer le `ServiceMonitor` du repo :
+
+```bash
+kubectl -n ingress-nginx patch deployment ingress-nginx-controller --type=json -p='[
+  {"op": "add", "path": "/spec/template/spec/containers/0/args/-", "value": "--enable-metrics=true"},
+  {"op": "add", "path": "/spec/template/spec/containers/0/ports/-", "value": {"name": "metrics", "containerPort": 10254, "protocol": "TCP"}}
+]'
+kubectl -n ingress-nginx patch service ingress-nginx-controller --type=json -p='[
+  {"op": "add", "path": "/spec/ports/-", "value": {"name": "metrics", "port": 10254, "targetPort": "metrics", "protocol": "TCP"}}
+]'
+kubectl apply -f ingress-servicemonitor.yaml
+```
+
 ---
 
 # 6. ♾ Cloner le repository GitHub dans WSL
@@ -144,13 +159,13 @@ cd kubernetes-kind-ha-lab
 
 ```bash
 docker build -t demo:v1 app/v1
-kind load docker-image demo:v1 --name ha-cluster
-kubectl label node ha-cluster-control-plane ingress-ready=true
+kind load docker-image demo:v1 --name kind
+kubectl label node kind-control-plane ingress-ready=true
 kubectl apply -f manifests/demo-v1.yaml
 kubectl get pods -l app=demo-v1
 
 docker build -t demo:v2 app/v2
-kind load docker-image demo:v2 --name ha-cluster
+kind load docker-image demo:v2 --name kind
 kubectl apply -f manifests/demo-v2.yaml
 
 kubectl apply -f manifests/ingress.yaml
@@ -186,16 +201,19 @@ kubectl -n monitoring get pods
 
 # 📈 9. Accès à Grafana
 
+Le port hôte `8080` est déjà réservé par `kind-config.yaml` pour l'ingress (voir section 4) — utiliser
+un autre port local pour Grafana, par exemple `8081` :
+
 ```
-kubectl -n monitoring port-forward svc/prom-grafana 8080:80
-curl http://127.0.0.1:8080
+kubectl -n monitoring port-forward --address 127.0.0.1 svc/monitoring-grafana 8081:80
+curl http://127.0.0.1:8081
 
 ```
 
 Identifiants par défaut :
 
 - User : **admin**
-- **Password** révcupéré via -> kubectl get secret -n monitoring prom-grafana -o jsonpath="{.data.admin-password}" | base64 -d ; echo
+- **Password** récupéré via -> kubectl -n monitoring get secret monitoring-grafana -o jsonpath="{.data.admin-password}" | base64 -d ; echo
 
 ### 🔹 Dashboards inclus automatiquement
 
@@ -245,6 +263,7 @@ Pour déployer le script Bash afin d'automatiser les dashboards (nécessite une 
 adresse email de notification — `contact-points/email.json` utilise `${ALERT_EMAIL}`) :
 ```bash
 chmod +x scripts/deploy-grafana.sh
+export GRAFANA_URL="http://127.0.0.1:8081"   # doit correspondre au port du port-forward (section 9)
 export API_KEY="ta-cle-api-grafana"
 export ALERT_EMAIL="ton-email@exemple.com"
 ./scripts/deploy-grafana.sh
@@ -255,6 +274,6 @@ export ALERT_EMAIL="ton-email@exemple.com"
 # 🧹 11. Nettoyage du cluster et des images Docker inutiles
 
 ```bash
-kind delete cluster --name ha-cluster
+kind delete cluster --name kind
 docker system prune -af
 ```
