@@ -17,10 +17,12 @@ curl -X POST "$GRAFANA_URL/api/dashboards/db" \
 # 2. Import Contact Points
 # -------------------------
 echo "📨 Importing contact points..."
+: "${ALERT_EMAIL:?La variable ALERT_EMAIL doit être définie (adresse de notification)}"
+envsubst < grafana/contact-points/email.json > /tmp/email.json
 curl -X POST "$GRAFANA_URL/api/v1/provisioning/contact-points" \
   -H "Authorization: Bearer $API_KEY" \
   -H "Content-Type: application/json" \
-  --data-binary @grafana/contact-points/email.json
+  --data-binary @/tmp/email.json
 
 # -------------------------
 # 3. Import Notification Policies

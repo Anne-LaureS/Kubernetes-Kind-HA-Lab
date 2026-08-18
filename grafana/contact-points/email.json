@@ -2,6 +2,6 @@
   "name": "email-alerts",
   "type": "email",
   "settings": {
-    "addresses": "REDACTED"
+    "addresses": "${ALERT_EMAIL}"
   }
 }

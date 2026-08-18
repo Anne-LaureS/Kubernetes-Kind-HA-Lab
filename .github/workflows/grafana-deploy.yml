@@ -23,5 +23,6 @@ jobs:
       - name: Run Grafana deployment script
         env:
           API_KEY: ${{ secrets.GRAFANA_API_KEY }}
+          ALERT_EMAIL: ${{ secrets.ALERT_EMAIL }}
         run: |
           ./scripts/deploy-grafana.sh
