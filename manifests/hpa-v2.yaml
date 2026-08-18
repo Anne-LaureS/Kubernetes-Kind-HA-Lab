@@ -6,7 +6,7 @@ spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: web-v2
+    name: demo-v2
   minReplicas: 2
   maxReplicas: 10
   metrics:
