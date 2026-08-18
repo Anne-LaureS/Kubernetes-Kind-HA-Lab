@@ -134,7 +134,7 @@ kubectl get svc -n ingress-nginx
 
 ```bash
 cd ~
-sudo git clone https://github.com/Anne-LaureS/kubernetes-kind-ha-lab.git
+git clone https://github.com/Anne-LaureS/kubernetes-kind-ha-lab.git
 cd kubernetes-kind-ha-lab
 ```
 
@@ -146,11 +146,11 @@ cd kubernetes-kind-ha-lab
 docker build -t demo:v1 app/v1
 kind load docker-image demo:v1 --name ha-cluster
 kubectl label node ha-cluster-control-plane ingress-ready=true
+kubectl apply -f manifests/demo-v1.yaml
 kubectl get pods -l app=demo-v1
-kubectl apply -f manifests/demo-v1.yam
 
 docker build -t demo:v2 app/v2
-kind load docker-image demo:v1 --name ha-cluster
+kind load docker-image demo:v2 --name ha-cluster
 kubectl apply -f manifests/demo-v2.yaml
 
 kubectl apply -f manifests/ingress.yaml
@@ -187,7 +187,7 @@ kubectl -n monitoring get pods
 # 📈 9. Accès à Grafana
 
 ```
-kubectl -n monitoring port-forward pod/prom-grafana-7bcf667bd9-b5bbk 8080:3000
+kubectl -n monitoring port-forward svc/prom-grafana 8080:80
 curl http://127.0.0.1:8080
 
 ```
@@ -241,11 +241,13 @@ kubernetes-kind-ha-lab/
 │       └── grafana-deploy.yml
 ```
 
-Pour déployer le script Bash afin d'automatiser les dashboards :
-```
+Pour déployer le script Bash afin d'automatiser les dashboards (nécessite une clé API Grafana et une
+adresse email de notification — `contact-points/email.json` utilise `${ALERT_EMAIL}`) :
+```bash
 chmod +x scripts/deploy-grafana.sh
+export API_KEY="ta-cle-api-grafana"
+export ALERT_EMAIL="ton-email@exemple.com"
 ./scripts/deploy-grafana.sh
-API_KEY="$API_KEY" ./scripts/deploy-grafana.sh
 ```
 
 ---
