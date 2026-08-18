@@ -210,7 +210,23 @@ kubectl -n monitoring get pods
 
 ---
 
-# 📈 9. Accès à Grafana
+# 🔎 9. Installation d'Elasticsearch et Metricbeat
+
+```bash
+kubectl apply -f monitoring/elasticsearch.yaml
+kubectl apply -f monitoring/metricbeat.yaml
+```
+
+Vérifier :
+
+```bash
+kubectl -n monitoring get pods -l app=elasticsearch
+kubectl -n elastic get pods
+```
+
+---
+
+# 📈 10. Accès à Grafana
 
 Le port hôte `8080` est déjà réservé par `kind-config.yaml` pour l'ingress (voir section 4) — utiliser
 un autre port local pour Grafana, par exemple `8081` :
@@ -236,7 +252,7 @@ Identifiants par défaut :
 
 ---
 
-# 🛠️ 10. Dashboard personnalisé (Cluster Overview)
+# 🛠️ 11. Dashboard personnalisé (Cluster Overview)
   
 Il inclut :
 
@@ -282,7 +298,7 @@ export ALERT_EMAIL="ton-email@exemple.com"
 
 ---
 
-# 🧹 11. Nettoyage du cluster et des images Docker inutiles
+# 🧹 12. Nettoyage du cluster et des images Docker inutiles
 
 ```bash
 kind delete cluster --name kind
