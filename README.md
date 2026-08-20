@@ -24,6 +24,27 @@ Ce lab est conçu pour l’expérimentation et la démonstration de concepts Kub
 
 ---
 
+### 📑 Sommaire
+
+1. [Architecture du projet](#1-architecture-du-projet)
+2. [Prérequis](#2-prérequis)
+3. [Cloner le repository](#3-cloner-le-repository-github-dans-wsl)
+4. [Structure du repo](#4-structure-du-repo)
+5. [Création du cluster KinD HA](#5-création-du-cluster-kind-ha)
+6. [Installation de l'Ingress NGINX](#6-installation-de-lingress-nginx)
+7. [Déploiement des applications v1 et v2](#7-déploiement-des-applications-v1-et-v2)
+8. [Installation du monitoring](#8-installation-du-monitoring-kubeprometheusstack)
+9. [Elasticsearch et Metricbeat](#9-installation-delasticsearch-et-metricbeat)
+10. [Accès à Grafana](#10-accès-à-grafana)
+11. [Dashboard personnalisé](#11-dashboard-personnalisé-cluster-overview)
+12. [Mettre le labo en pause / le reprendre](#12-mettre-le-labo-en-pause--le-reprendre)
+13. [Nettoyage](#13-nettoyage-du-cluster-et-des-images-docker-inutiles)
+
+*(si un lien ne saute pas au bon endroit, la table des matières native de GitHub — icône ☰ en haut à
+gauche du fichier — fonctionne toujours comme filet de sécurité)*
+
+---
+
 # 🏗️ 1. Architecture du projet
 
 ### 🔹 Cluster KinD HA
@@ -53,10 +74,12 @@ Ce lab est conçu pour l’expérimentation et la démonstration de concepts Kub
 - KinD  
 - Helm  
 - WSL Ubuntu
+- **~4-5 Go de RAM disponibles** pour Docker Desktop une fois tout le lab démarré (3 nœuds + stack
+  de monitoring + Elasticsearch) — voir section 12 pour mettre le lab en pause entre deux utilisations
 
 ---
 
-# 3. ♾ Cloner le repository GitHub dans WSL
+# ♾ 3. Cloner le repository GitHub dans WSL
 
 Les sections suivantes utilisent des fichiers de ce repo (`kind-config.yaml`, `manifests/`,
 `monitoring/`...) — cloner en premier :
@@ -164,8 +187,11 @@ kubectl -n ingress-nginx patch deployment ingress-nginx-controller --type=json -
 kubectl -n ingress-nginx patch service ingress-nginx-controller --type=json -p='[
   {"op": "add", "path": "/spec/ports/-", "value": {"name": "metrics", "port": 10254, "targetPort": "metrics", "protocol": "TCP"}}
 ]'
-kubectl apply -f ingress-servicemonitor.yaml
 ```
+
+ℹ️ Le `ServiceMonitor` lui-même (`ingress-servicemonitor.yaml`) s'applique **après** la section 8 —
+son CRD (`monitoring.coreos.com/v1`) est fourni par `kube-prometheus-stack`, pas encore installé à ce
+stade. L'appliquer maintenant échoue avec `no matches for kind "ServiceMonitor"`.
 
 ⚠️ Le manifeste "kind" ne fixe pas le pod du contrôleur sur le nœud `control-plane` — or c'est le seul
 nœud sur lequel `kind-config.yaml` mappe les ports hôte `8080`/`443`. Après un redémarrage/rollout, le
@@ -210,16 +236,23 @@ helm repo add grafana https://grafana.github.io/helm-charts
 helm repo update
 ```
 
-Installer le stack :
+Installer le stack — **le nom de release doit être `monitoring`** (les sections suivantes, et
+notamment `svc/monitoring-grafana` en section 10, en dépendent) :
 
 ```bash
-helm install prom prometheus-community/kube-prometheus-stack -n monitoring --create-namespace
+helm install monitoring prometheus-community/kube-prometheus-stack -n monitoring --create-namespace
 ```
 
 Vérifier :
 
 ```bash
 kubectl -n monitoring get pods
+```
+
+Une fois tous les pods `Running`, appliquer le `ServiceMonitor` de l'ingress (voir note section 6) :
+
+```bash
+kubectl apply -f ingress-servicemonitor.yaml
 ```
 
 ---
@@ -265,16 +298,18 @@ CPU du nœud.
 Le port hôte `8080` est déjà réservé par `kind-config.yaml` pour l'ingress (voir section 5) — utiliser
 un autre port local pour Grafana, par exemple `8081` :
 
-```
+```bash
 kubectl -n monitoring port-forward --address 127.0.0.1 svc/monitoring-grafana 8081:80
 curl http://127.0.0.1:8081
-
 ```
 
 Identifiants par défaut :
 
 - User : **admin**
-- **Password** récupéré via -> kubectl -n monitoring get secret monitoring-grafana -o jsonpath="{.data.admin-password}" | base64 -d ; echo
+- Password :
+  ```bash
+  kubectl -n monitoring get secret monitoring-grafana -o jsonpath="{.data.admin-password}" | base64 -d ; echo
+  ```
 
 ### 🔹 Dashboards inclus automatiquement
 
@@ -287,7 +322,12 @@ Identifiants par défaut :
 ---
 
 # 🛠️ 11. Dashboard personnalisé (Cluster Overview)
-  
+
+> Une fois importé (voir "Automatiser les dashboards" ci-dessous), il apparaît dans Grafana sous le
+> titre **"Kubernetes – HA Overview (advanced + alerts)"** (uid `k8s_ha_overview`) — pas littéralement
+> "Cluster Overview", qui n'est que le nom descriptif utilisé dans ce README. Accès direct :
+> `http://127.0.0.1:8081/d/k8s_ha_overview`.
+
 Il inclut :
 
 - CPU cluster  
@@ -319,6 +359,9 @@ export ALERT_EMAIL="ton-email@exemple.com"
 ./scripts/deploy-grafana.sh
 ```
 
+La clé API s'obtient dans Grafana → **Administration → Users and access → Service accounts** →
+*Add service account* (rôle Admin) → *Add service account token*.
+
 ---
 
 # ⏸️ 12. Mettre le labo en pause / le reprendre
@@ -334,6 +377,12 @@ docker stop kind-worker kind-worker2 kind-control-plane kind-cloud-provider kind
 # Reprendre plus tard, état identique
 docker start kind-worker kind-worker2 kind-control-plane kind-cloud-provider kind-registry-mirror
 ```
+
+⚠️ Si le réseau Docker `kind` a été supprimé entre-temps (ex: `docker network prune`), ce redémarrage
+échoue avec `network ... not found` — irrécupérable. Dans ce cas, repartir de la section 5
+(`kind delete cluster` puis `kind create cluster`).
+
+---
 
 # 🧹 13. Nettoyage du cluster et des images Docker inutiles
 
