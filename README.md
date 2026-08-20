@@ -39,7 +39,6 @@ Ce lab est conçu pour l’expérimentation et la démonstration de concepts Kub
 11. [Dashboard personnalisé](#11-dashboard-personnalisé-cluster-overview)
 12. [Mettre le labo en pause / le reprendre](#12-mettre-le-labo-en-pause--le-reprendre)
 13. [Nettoyage](#13-nettoyage-du-cluster-et-des-images-docker-inutiles)
-14. [Incidents rencontrés (et corrigés)](#14-incidents-rencontrés-et-corrigés)
 
 *(si un lien ne saute pas au bon endroit, la table des matières native de GitHub — icône ☰ en haut à
 gauche du fichier — fonctionne toujours comme filet de sécurité)*
@@ -393,20 +392,3 @@ Contrairement à la pause ci-dessus, ceci **supprime définitivement** le cluste
 kind delete cluster --name kind
 docker system prune -af
 ```
-
----
-
-# 🚧 14. Incidents rencontrés (et corrigés)
-
-Ce lab a été reconstruit de zéro plusieurs fois en conditions réelles — les incidents suivants ont été
-rencontrés puis corrigés, et sont documentés ici plutôt que passés sous silence :
-
-| Incident | Symptôme | Correction |
-|---|---|---|
-| `docker network prune` supprime le réseau `kind` pendant une pause du lab | Les conteneurs stoppés refusent de redémarrer (`network ... not found`), irrécupérable | Toujours filtrer `docker network prune` par nom/label plutôt que de l'exécuter à l'aveugle sur un environnement avec plusieurs projets Docker actifs ; en cas d'incident, repartir de la section 5 (`kind delete cluster` + `kind create cluster`) |
-| Nom de release Helm incohérent avec le reste de la doc (`prom` vs `monitoring`) | `svc/monitoring-grafana` (section 10) introuvable après une install avec le mauvais nom de release | Fixé : le nom de release doit être `monitoring` (section 8) |
-| `ServiceMonitor` appliqué avant l'installation du stack de monitoring | `no matches for kind "ServiceMonitor"` — le CRD n'existe pas encore | Réordonné : le `ServiceMonitor` s'applique après `helm install monitoring ...` (section 8), pas dans la section 6 |
-| Dashboard custom introuvable dans Grafana en cherchant "Cluster Overview" | Le dashboard existe (import réussi) mais porte un titre différent dans l'interface | Documenté le vrai titre et l'URL directe dans la section 11 |
-
-Aucun de ces incidents n'a fait perdre de données de configuration (tout est versionné dans ce repo) —
-seul l'état *live* du cluster a dû être reconstruit à chaque fois.
