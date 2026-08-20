@@ -321,7 +321,23 @@ export ALERT_EMAIL="ton-email@exemple.com"
 
 ---
 
-# 🧹 12. Nettoyage du cluster et des images Docker inutiles
+# ⏸️ 12. Mettre le labo en pause / le reprendre
+
+Le cluster (control-plane + 2 workers + registry mirror) consomme plusieurs Go de RAM en continu.
+S'il n'est pas utilisé, on peut le stopper sans rien perdre (config, dashboards, données) — les
+conteneurs Docker sont juste arrêtés, pas supprimés :
+
+```bash
+# Mettre en pause (libère la RAM)
+docker stop kind-worker kind-worker2 kind-control-plane kind-cloud-provider kind-registry-mirror
+
+# Reprendre plus tard, état identique
+docker start kind-worker kind-worker2 kind-control-plane kind-cloud-provider kind-registry-mirror
+```
+
+# 🧹 13. Nettoyage du cluster et des images Docker inutiles
+
+Contrairement à la pause ci-dessus, ceci **supprime définitivement** le cluster et son état :
 
 ```bash
 kind delete cluster --name kind
