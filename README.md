@@ -15,6 +15,7 @@ Ce projet met en place un environnement Kubernetes local **reproductible**, bas�
 - deux versions d’une application (v1 / v2)  
 - un **Service** + **Ingress** pour exposer l’app  
 - un **stack de monitoring complet** (Prometheus, Grafana, Alertmanager) via kube‑prometheus‑stack  
+- un **SIEM Wazuh** (manager, indexer, dashboard) déployé en single-node sur le cluster
 
 Ce lab est conçu pour l’expérimentation et la démonstration de concepts Kubernetes dans un environnement maîtrisé.
 
@@ -37,8 +38,9 @@ Ce lab est conçu pour l’expérimentation et la démonstration de concepts Kub
 9. [Elasticsearch et Metricbeat](#9-installation-delasticsearch-et-metricbeat)
 10. [Accès à Grafana](#10-accès-à-grafana)
 11. [Dashboard personnalisé](#11-dashboard-personnalisé-cluster-overview)
-12. [Mettre le labo en pause / le reprendre](#12-mettre-le-labo-en-pause--le-reprendre)
-13. [Nettoyage](#13-nettoyage-du-cluster-et-des-images-docker-inutiles)
+12. [Installation de Wazuh (SIEM)](#12-installation-de-wazuh-siem)
+13. [Mettre le labo en pause / le reprendre](#13-mettre-le-labo-en-pause--le-reprendre)
+14. [Nettoyage](#14-nettoyage-du-cluster-et-des-images-docker-inutiles)
 
 *(si un lien ne saute pas au bon endroit, la table des matières native de GitHub — icône ☰ en haut à
 gauche du fichier — fonctionne toujours comme filet de sécurité)*
@@ -65,6 +67,11 @@ gauche du fichier — fonctionne toujours comme filet de sécurité)*
 - **Alertmanager** → gestion des alertes
 - **Elasticsearch**  
 
+### 🔹 SIEM
+- **Wazuh manager** (master + worker) → collecte et analyse d'événements de sécurité
+- **Wazuh indexer** → stockage (fork d'OpenSearch, cluster distinct de l'Elasticsearch de la section 9)
+- **Wazuh dashboard** → visualisation des alertes de sécurité
+
 ---
 
 # 🧰 2. Prérequis
@@ -74,8 +81,9 @@ gauche du fichier — fonctionne toujours comme filet de sécurité)*
 - KinD  
 - Helm  
 - WSL Ubuntu
-- **~4-5 Go de RAM disponibles** pour Docker Desktop une fois tout le lab démarré (3 nœuds + stack
-  de monitoring + Elasticsearch) — voir section 12 pour mettre le lab en pause entre deux utilisations
+- **~7-8 Go de RAM disponibles** pour Docker Desktop une fois tout le lab démarré (3 nœuds + stack
+  de monitoring + Elasticsearch + Wazuh) — voir section 13 pour mettre le lab en pause entre deux
+  utilisations
 
 ---
 
@@ -119,7 +127,8 @@ kubernetes-kind-ha-lab/
 │   └── notification-policies/
 │       └── default.json
 ├── scripts/
-│   └── deploy-grafana.sh
+│   ├── deploy-grafana.sh
+│   └── deploy-wazuh.sh
 ├── .github/
 │   └── workflows/
 │       └── grafana-deploy.yml
@@ -127,6 +136,19 @@ kubernetes-kind-ha-lab/
 │   ├── elasticsearch.yaml
 │   ├── elasticsearch-datasource.yaml
 │   └── metricbeat.yaml
+├── wazuh/
+│   ├── kustomization.yml
+│   ├── base/
+│   ├── certs/                  (générés localement, non commités)
+│   ├── secrets/
+│   ├── wazuh_managers/
+│   └── indexer_stack/
+├── wazuh-envs/
+│   └── kind-env/
+│       ├── kustomization.yml
+│       ├── storage-class.yaml
+│       ├── indexer-resources.yaml
+│       └── wazuh-resources.yaml
 ├── manifests/
 │   ├── configmap-v1.yaml
 │   ├── configmap-v2.yaml
@@ -303,6 +325,26 @@ kubectl -n monitoring port-forward --address 127.0.0.1 svc/monitoring-grafana 80
 curl http://127.0.0.1:8081
 ```
 
+⚠️ **Sous WSL + VS Code (Remote-WSL)** : `http://127.0.0.1:8081` peut rester inaccessible depuis le
+navigateur Windows (`ERR_CONNECTION_REFUSED`) même si `curl` réussit *depuis WSL* et que le port
+apparaît "vert" dans l'onglet **PORTS** de VS Code — le relais localhost WSL→Windows ne suit pas
+toujours un port-forward `kubectl` lancé en arrière-plan. Solution qui fonctionne à coup sûr :
+
+```bash
+# 1. Relancer le port-forward en écoutant sur toutes les interfaces, pas juste 127.0.0.1
+kubectl -n monitoring port-forward --address 0.0.0.0 svc/monitoring-grafana 8081:80
+
+# 2. Récupérer l'IP de la VM WSL (change à CHAQUE redémarrage de WSL, donc à revérifier à chaque
+#    session — ne jamais la coder en dur, cf. le piège équivalent avec l'IP EC2 en TP7)
+hostname -I
+```
+
+Puis ouvrir `http://<IP-WSL>:8081` (ex. `http://172.24.188.82:8081`) depuis le navigateur Windows.
+⚠️ Ceci écoute sur toutes les interfaces réseau, pas seulement en local — le dashboard devient
+accessible à tout le réseau local tant que le port-forward tourne ; à ne faire que temporairement, et
+à arrêter (`Ctrl+C` / `kill`) une fois la vérification terminée. Même procédure pour tout autre
+port-forward de ce lab (Wazuh section 12 inclus).
+
 Identifiants par défaut :
 
 - User : **admin**
@@ -364,7 +406,79 @@ La clé API s'obtient dans Grafana → **Administration → Users and access →
 
 ---
 
-# ⏸️ 12. Mettre le labo en pause / le reprendre
+# 🛡️ 12. Installation de Wazuh (SIEM)
+
+Wazuh apporte un SIEM (détection d'événements de sécurité, FIM, analyse de logs) en complément du
+stack d'observabilité des sections précédentes. Il tourne dans son propre namespace (`wazuh`) et son
+propre cluster d'indexation (**wazuh-indexer**, un fork d'OpenSearch) — indépendant de
+l'Elasticsearch de la section 9, ils ne partagent aucune donnée.
+
+Les manifests sont vendorisés depuis le dépôt officiel
+[wazuh/wazuh-kubernetes](https://github.com/wazuh/wazuh-kubernetes) (tag `v4.14.7`) dans `wazuh/`.
+`wazuh-envs/kind-env/` est un overlay Kustomize ajouté pour ce lab : il remplace le provisioner de
+stockage par `rancher.io/local-path` (celui déjà présent sur KinD, à la place de
+`microk8s.io/hostpath` utilisé par l'overlay officiel `local-env`) et réduit l'empreinte à 1 réplique
+par composant (indexer, manager worker) — suffisant pour une démo single-node et beaucoup plus léger
+que le déploiement HA par défaut (3 indexers + 2 workers).
+
+⚠️ Les certificats TLS (`wazuh/certs/`) ne sont **pas commités** — ce sont des clés privées générées
+localement à partir des scripts `generate_certs.sh` fournis par Wazuh. Le script de déploiement les
+génère automatiquement s'ils sont absents.
+
+```bash
+chmod +x scripts/deploy-wazuh.sh
+./scripts/deploy-wazuh.sh
+```
+
+Le script génère les certificats, applique l'overlay (`kubectl apply -k wazuh-envs/kind-env`) et
+attend que les 4 pods (indexer, manager master, manager worker, dashboard) soient prêts — compter
+plusieurs minutes, le démarrage de l'indexer (JVM OpenSearch) est le plus long.
+
+Vérifier :
+
+```bash
+kubectl -n wazuh get pods
+```
+
+### 🔹 Accès au dashboard
+
+```bash
+kubectl -n wazuh port-forward --address 127.0.0.1 svc/dashboard 8443:443
+```
+
+Ouvrir `https://127.0.0.1:8443` (avertissement certificat auto-signé attendu, à accepter).
+
+⚠️ Si le navigateur Windows renvoie `ERR_CONNECTION_REFUSED` malgré un port-forward actif — problème
+courant sous WSL + VS Code — voir la solution (`--address 0.0.0.0` + IP WSL) détaillée en section 10.
+
+Identifiants par défaut (démo officielle Wazuh, communs indexer + dashboard) :
+
+- User : **admin**
+- Password : **SecretPassword**
+
+⚠️ Ce sont les identifiants de démonstration publiés tels quels dans le dépôt officiel
+`wazuh-kubernetes` (`wazuh/secrets/`) — à changer avant toute exposition au-delà de ce lab local (via
+`wazuh/secrets/indexer-cred-secret.yaml` et `wazuh/wazuh_managers/wazuh_conf/` pour l'API manager).
+
+<p align="center">
+  <img src="screenshots/wazuh-dashboard.png" width="90%" alt="Dashboard Wazuh" />
+</p>
+
+### 🔹 Limitation connue : statut "Offline" sur la page Server APIs
+
+Le badge de statut peut afficher **Offline** dans l'onglet *Server APIs* du dashboard alors que
+l'API du manager répond correctement. Cause : sous une pile réseau virtualisée chargée (WSL2 +
+Docker Desktop + KinD), le premier appel du dashboard vers l'API du manager (port `55000`) subit
+occasionnellement des ré-essais TLS avant d'aboutir, ce qui peut prendre 20 à 30 secondes — largement
+au-delà du délai que l'interface attend avant d'afficher Offline (~8 s). L'appel finit par réussir
+côté backend (confirmé dans `kubectl -n wazuh logs deploy/wazuh-dashboard`, requêtes `check-api` en
+`200` après ce délai) ; ce n'est donc pas un défaut de configuration ni un problème de credentials,
+juste un décalage de timeout côté interface sous ces contraintes réseau. Sans impact sur les données
+déjà indexées (alertes, FIM, etc.), uniquement sur ce badge de statut.
+
+---
+
+# ⏸️ 13. Mettre le labo en pause / le reprendre
 
 Le cluster (control-plane + 2 workers + registry mirror) consomme plusieurs Go de RAM en continu.
 S'il n'est pas utilisé, on peut le stopper sans rien perdre (config, dashboards, données) — les
@@ -384,7 +498,7 @@ docker start kind-worker kind-worker2 kind-control-plane kind-cloud-provider kin
 
 ---
 
-# 🧹 13. Nettoyage du cluster et des images Docker inutiles
+# 🧹 14. Nettoyage du cluster et des images Docker inutiles
 
 Contrairement à la pause ci-dessus, ceci **supprime définitivement** le cluster et son état :
 

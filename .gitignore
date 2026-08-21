@@ -10,6 +10,12 @@ kubeconfig.yaml
 # Fichiers temporaires
 *.tmp
 
+# Certificats Wazuh générés localement (clés privées - ne jamais commit)
+wazuh/certs/indexer_cluster/*.pem
+wazuh/certs/indexer_cluster/*.csr
+wazuh/certs/indexer_cluster/*.srl
+wazuh/certs/dashboard_http/*.pem
+
 # OS / éditeur
 .DS_Store
 *.swp

@@ -1,0 +1,8 @@
+# 1 seul worker manager (au lieu de 2) : suffisant pour une démo single-node.
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: wazuh-manager-worker
+  namespace: wazuh
+spec:
+  replicas: 1

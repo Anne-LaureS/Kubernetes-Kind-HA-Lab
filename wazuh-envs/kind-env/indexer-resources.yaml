@@ -1,0 +1,20 @@
+# 1 seul indexer (au lieu de 3 en HA) : suffisant pour une démo single-node et
+# largement plus léger pour un cluster KinD à ressources limitées.
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: wazuh-indexer
+  namespace: wazuh
+spec:
+  replicas: 1
+  template:
+    spec:
+      containers:
+        - name: wazuh-indexer
+          resources:
+            requests:
+              cpu: 500m
+              memory: 1Gi
+            limits:
+              cpu: 1
+              memory: 2Gi

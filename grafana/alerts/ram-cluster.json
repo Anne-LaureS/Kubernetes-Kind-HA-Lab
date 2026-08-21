@@ -1,17 +1,18 @@
 {
   "uid": "ram_cluster",
   "title": "RAM Cluster High",
-  "folderUID": "general",
+  "folderUID": "cluster-alerts",
   "ruleGroup": "cluster-alerts",
   "interval": "40s",
-
   "condition": "C",
-
   "data": [
     {
       "refId": "A",
       "queryType": "timeSeriesQuery",
-      "relativeTimeRange": { "from": 300, "to": 0 },
+      "relativeTimeRange": {
+        "from": 300,
+        "to": 0
+      },
       "datasourceUid": "prometheus",
       "model": {
         "expr": "sum(container_memory_working_set_bytes{container!=\"\",pod!=\"\"}) / sum(machine_memory_bytes) * 100",
@@ -24,21 +25,25 @@
       "model": {
         "type": "threshold",
         "expression": "A",
-        "thresholds": [
-          { "value": 85, "color": "red" }
+        "conditions": [
+          {
+            "evaluator": {
+              "type": "gt",
+              "params": [
+                85
+              ]
+            }
+          }
         ]
       }
     }
   ],
-
   "for": "5m",
   "noDataState": "NoData",
   "execErrState": "Error",
-
   "labels": {
     "severity": "critical"
   },
-
   "annotations": {
     "summary": "RAM cluster usage too high"
   }

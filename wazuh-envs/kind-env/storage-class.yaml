@@ -1,0 +1,9 @@
+# Wazuh StorageClass - adaptée pour KinD (rancher.io/local-path est le provisioner
+# du storage class "standard" déjà installé par KinD, cf. `kubectl get storageclass`).
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: wazuh-storage
+provisioner: rancher.io/local-path
+reclaimPolicy: Delete
+volumeBindingMode: WaitForFirstConsumer

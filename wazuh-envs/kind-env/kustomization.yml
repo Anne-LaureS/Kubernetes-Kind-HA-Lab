@@ -1,0 +1,13 @@
+# Overlay KinD - adapte les manifests officiels wazuh/wazuh-kubernetes (v4.14.7)
+# pour ce lab : storageClass rancher.io/local-path (déjà présent sur KinD, au lieu de
+# microk8s.io/hostpath) et empreinte réduite à 1 réplique par composant (indexer/worker),
+# suffisant pour une démo single-node.
+
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+- ../../wazuh
+patches:
+- path: storage-class.yaml
+- path: indexer-resources.yaml
+- path: wazuh-resources.yaml
