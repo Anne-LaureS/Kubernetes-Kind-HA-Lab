@@ -2,6 +2,7 @@
 
 ![Kubernetes](https://img.shields.io/badge/Kubernetes-326CE5?logo=kubernetes&logoColor=white)
 ![kind](https://img.shields.io/badge/kind-3D3D3D?logo=kubernetes&logoColor=white)
+![Wazuh](https://img.shields.io/badge/Wazuh-3585F9?logoColor=white)
 ![CI](https://github.com/Anne-LaureS/Kubernetes-Kind-HA-Lab/actions/workflows/grafana-deploy.yml/badge.svg)
 
 ---
