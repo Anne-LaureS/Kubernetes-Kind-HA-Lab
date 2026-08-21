@@ -17,6 +17,7 @@ Ce projet met en place un environnement Kubernetes local **reproductible**, bas�
 - deux versions d’une application (v1 / v2)  
 - un **Service** + **Ingress** pour exposer l’app  
 - un **stack de monitoring complet** (Prometheus, Grafana, Alertmanager) via kube‑prometheus‑stack  
+- **Elasticsearch** + **Metricbeat** pour la santé du cluster ES lui-même  
 - un **SIEM Wazuh** (manager, indexer, dashboard) déployé en single-node sur le cluster
 
 Ce lab est conçu pour l’expérimentation et la démonstration de concepts Kubernetes dans un environnement maîtrisé.
