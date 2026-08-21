@@ -30,20 +30,20 @@ Ce lab est conçu pour l’expérimentation et la démonstration de concepts Kub
 
 ### 📑 Sommaire
 
-1. [Architecture du projet](#1-architecture-du-projet)
-2. [Prérequis](#2-prérequis)
-3. [Cloner le repository](#3-cloner-le-repository-github-dans-wsl)
-4. [Structure du repo](#4-structure-du-repo)
-5. [Création du cluster KinD HA](#5-création-du-cluster-kind-ha)
-6. [Installation de l'Ingress NGINX](#6-installation-de-lingress-nginx)
-7. [Déploiement des applications v1 et v2](#7-déploiement-des-applications-v1-et-v2)
-8. [Installation du monitoring](#8-installation-du-monitoring-kubeprometheusstack)
-9. [Elasticsearch et Metricbeat](#9-installation-delasticsearch-et-metricbeat)
-10. [Accès à Grafana](#10-accès-à-grafana)
-11. [Dashboard personnalisé](#11-dashboard-personnalisé-cluster-overview)
-12. [Installation de Wazuh (SIEM)](#12-installation-de-wazuh-siem)
-13. [Mettre le labo en pause / le reprendre](#13-mettre-le-labo-en-pause--le-reprendre)
-14. [Nettoyage](#14-nettoyage-du-cluster-et-des-images-docker-inutiles)
+1. [Architecture du projet](#️-1-architecture-du-projet)
+2. [Prérequis](#-2-prérequis)
+3. [Cloner le repository](#-3-cloner-le-repository-github-dans-wsl)
+4. [Structure du repo](#-4-structure-du-repo)
+5. [Création du cluster KinD HA](#-5-création-du-cluster-kind-ha)
+6. [Installation de l'Ingress NGINX](#-6-installation-de-lingress-nginx)
+7. [Déploiement des applications v1 et v2](#-7-déploiement-des-applications-v1-et-v2)
+8. [Installation du monitoring](#-8-installation-du-monitoring-kubeprometheusstack)
+9. [Elasticsearch et Metricbeat](#-9-installation-delasticsearch-et-metricbeat)
+10. [Accès à Grafana](#-10-accès-à-grafana)
+11. [Dashboard personnalisé](#️-11-dashboard-personnalisé-cluster-overview)
+12. [Installation de Wazuh (SIEM)](#️-12-installation-de-wazuh-siem)
+13. [Mettre le labo en pause / le reprendre](#️-13-mettre-le-labo-en-pause--le-reprendre)
+14. [Nettoyage](#-14-nettoyage-du-cluster-et-des-images-docker-inutiles)
 
 *(si un lien ne saute pas au bon endroit, la table des matières native de GitHub — icône ☰ en haut à
 gauche du fichier — fonctionne toujours comme filet de sécurité)*
