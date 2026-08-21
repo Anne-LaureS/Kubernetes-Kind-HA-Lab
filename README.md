@@ -45,9 +45,6 @@ Ce lab est conçu pour l’expérimentation et la démonstration de concepts Kub
 13. [Mettre le labo en pause / le reprendre](#️-13-mettre-le-labo-en-pause--le-reprendre)
 14. [Nettoyage](#-14-nettoyage-du-cluster-et-des-images-docker-inutiles)
 
-*(si un lien ne saute pas au bon endroit, la table des matières native de GitHub — icône ☰ en haut à
-gauche du fichier — fonctionne toujours comme filet de sécurité)*
-
 ---
 
 # 🏗️ 1. Architecture du projet
