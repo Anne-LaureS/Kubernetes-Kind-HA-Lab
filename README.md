@@ -405,6 +405,17 @@ export ALERT_EMAIL="ton-email@exemple.com"
 La clé API s'obtient dans Grafana → **Administration → Users and access → Service accounts** →
 *Add service account* (rôle Admin) → *Add service account token*.
 
+⚠️ Les 4 règles d'alerte (`grafana/alerts/*.json`) pointent vers un dossier `cluster-alerts` (`Cluster
+Alerts`) que le script crée automatiquement avant de les provisionner. Ne pas repointer ces règles vers
+le dossier `"general"` : c'est un UID réservé par Grafana (impossible d'y créer un vrai objet dossier),
+et l'API `ruler` refuse alors l'accès en lecture (`403 access denied to folder`) — bug rencontré et
+corrigé une première fois sur ce repo, silencieux tant que personne n'ouvre la page des règles. De même,
+le champ de seuil des expressions `type: threshold` doit être `"conditions": [{"evaluator": {"type":
+"gt", "params": [...]}}]` — l'ancien format `"thresholds": [{"value": ..., "color": ...}]` est accepté
+à la création (aucune erreur du provisioning) mais fait échouer l'évaluation en silence au runtime
+(`[sse.parseError] failed to parse expression [C]: threshold expression requires exactly one
+condition` dans les logs du pod `monitoring-grafana`).
+
 ---
 
 # 🛡️ 12. Installation de Wazuh (SIEM)
