@@ -7,7 +7,7 @@
 ![CI](https://github.com/Anne-LaureS/Kubernetes-Kind-HA-Lab/actions/workflows/grafana-deploy.yml/badge.svg)
 
 ---
-  
+
 ### *Cluster multi‑nœuds, ingress, déploiements v1/v2, services et monitoring complet*
 
 Ce projet met en place un environnement Kubernetes local **reproductible**, basé sur **KinD** (Kubernetes in Docker), avec :
