@@ -12,12 +12,12 @@
 
 Ce projet met en place un environnement Kubernetes local **reproductible**, basé sur **KinD** (Kubernetes in Docker), avec :
 
-- un **cluster HA** (1 control-plane + 2 workers)  
-- un **Ingress NGINX** fonctionnel  
-- deux versions d’une application (v1 / v2)  
-- un **Service** + **Ingress** pour exposer l’app  
-- un **stack de monitoring complet** (Prometheus, Grafana, Alertmanager) via kube‑prometheus‑stack  
-- **Elasticsearch** + **Metricbeat** pour la santé du cluster ES lui-même  
+- un **cluster HA** (1 control-plane + 2 workers)
+- un **Ingress NGINX** fonctionnel
+- deux versions d’une application (v1 / v2)
+- un **Service** + **Ingress** pour exposer l’app
+- un **stack de monitoring complet** (Prometheus, Grafana, Alertmanager) via kube‑prometheus‑stack
+- **Elasticsearch** + **Metricbeat** pour la santé du cluster ES lui-même
 - un **SIEM Wazuh** (manager, indexer, dashboard) déployé en single-node sur le cluster
 
 Ce lab est conçu pour l’expérimentation et la démonstration de concepts Kubernetes dans un environnement maîtrisé.
@@ -50,22 +50,22 @@ Ce lab est conçu pour l’expérimentation et la démonstration de concepts Kub
 # 🏗️ 1. Architecture du projet
 
 ### 🔹 Cluster KinD HA
-- 1 node **control-plane**  
-- 2 nodes **workers**  
-- réseau Docker interne  
+- 1 node **control-plane**
+- 2 nodes **workers**
+- réseau Docker interne
 - Ingress exposé via NodePort
 
 ### 🔹 Applications
-- `app-v1`  
-- `app-v2`  
-- Service ClusterIP  
+- `app-v1`
+- `app-v2`
+- Service ClusterIP
 - Ingress HTTP (domaines locaux)
 
 ### 🔹 Observabilité
-- **Prometheus** → collecte des métriques  
-- **Grafana** → visualisation  
+- **Prometheus** → collecte des métriques
+- **Grafana** → visualisation
 - **Alertmanager** → gestion des alertes
-- **Elasticsearch**  
+- **Elasticsearch**
 
 ### 🔹 SIEM
 - **Wazuh manager** (master + worker) → collecte et analyse d'événements de sécurité
@@ -77,9 +77,9 @@ Ce lab est conçu pour l’expérimentation et la démonstration de concepts Kub
 # 🧰 2. Prérequis
 
 - Docker Desktop  (WSL Integration -> Ubuntu activé)
-- kubectl  
-- KinD  
-- Helm  
+- kubectl
+- KinD
+- Helm
 - WSL Ubuntu
 - **~7-8 Go de RAM disponibles** pour Docker Desktop une fois tout le lab démarré (3 nœuds + stack
   de monitoring + Elasticsearch + Wazuh) — voir section 13 pour mettre le lab en pause entre deux
@@ -242,7 +242,7 @@ kind load docker-image demo:v2 --name kind
 kubectl apply -f manifests/demo-v2.yaml
 
 kubectl apply -f manifests/ingress.yaml
-kubectl apply -f manifests/hpa-demo-v1.yaml 
+kubectl apply -f manifests/hpa-demo-v1.yaml
 ```
 
 ---
@@ -355,11 +355,11 @@ Identifiants par défaut :
 
 ### 🔹 Dashboards inclus automatiquement
 
-- Kubernetes / Compute Resources  
-- Kubernetes / Networking  
-- Node Exporter  
-- Prometheus Overview  
-- Grafana Overview  
+- Kubernetes / Compute Resources
+- Kubernetes / Networking
+- Node Exporter
+- Prometheus Overview
+- Grafana Overview
 
 ---
 
@@ -372,12 +372,12 @@ Identifiants par défaut :
 
 Il inclut :
 
-- CPU cluster  
-- RAM cluster  
-- CPU par node  
-- RAM par node  
-- Pods par node  
-- Latence Ingress P95  
+- CPU cluster
+- RAM cluster
+- CPU par node
+- RAM par node
+- Pods par node
+- Latence Ingress P95
 - Requêtes HTTP
 
 <p align="center">
