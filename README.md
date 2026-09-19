@@ -95,8 +95,8 @@ Les sections suivantes utilisent des fichiers de ce repo (`kind-config.yaml`, `m
 
 ```bash
 cd ~
-git clone https://github.com/Anne-LaureS/kubernetes-kind-ha-lab.git
-cd kubernetes-kind-ha-lab
+git clone https://github.com/Anne-LaureS/Kubernetes-Kind-HA-Lab.git
+cd Kubernetes-Kind-HA-Lab
 ```
 
 ---
@@ -104,7 +104,7 @@ cd kubernetes-kind-ha-lab
 # 📚 4. Structure du repo
 
 ```
-kubernetes-kind-ha-lab/
+Kubernetes-Kind-HA-Lab/
 ├── kind-config.yaml
 ├── ingress-servicemonitor.yaml
 ├── .gitignore
@@ -161,7 +161,9 @@ kubernetes-kind-ha-lab/
 ├── screenshots/
 │   ├── dashboard.png
 │   ├── alert-rule.png
-│   └── elasticsearch.png
+│   ├── elasticsearch.png
+│   ├── wazuh-dashboard.png
+│   └── grafana-home.png
 └── README.md
 ```
 
