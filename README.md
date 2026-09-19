@@ -4,6 +4,7 @@
 ![kind](https://img.shields.io/badge/kind-3D3D3D?logo=kubernetes&logoColor=white)
 ![Elasticsearch](https://img.shields.io/badge/Elasticsearch-005571?logo=elasticsearch&logoColor=white)
 ![Wazuh](https://img.shields.io/badge/Wazuh-3585F9?logoColor=white)
+![Grafana API](https://img.shields.io/badge/Grafana_API-F46800?logo=grafana&logoColor=white)
 ![CI](https://github.com/Anne-LaureS/Kubernetes-Kind-HA-Lab/actions/workflows/grafana-deploy.yml/badge.svg)
 
 ---
@@ -313,6 +314,27 @@ CPU du nœud.
   <img src="screenshots/elasticsearch.png" width="90%" alt="Dashboard Elasticsearch Cluster Health" />
 </p>
 
+### 🔹 Accès direct à l'API Elasticsearch
+
+En plus du dashboard Grafana ci-dessus, l'API REST d'Elasticsearch est interrogeable directement via
+port-forward — utile pour une vérification rapide sans passer par Grafana :
+
+```bash
+kubectl -n monitoring port-forward --address 0.0.0.0 svc/elasticsearch 9200:9200
+```
+
+Puis (même remarque WSL + VS Code qu'en section 10 : utiliser l'IP WSL, pas `127.0.0.1`, si le
+navigateur Windows ne répond pas) :
+
+```bash
+curl http://<IP-WSL>:9200/_cluster/health?pretty   # santé du cluster
+curl http://<IP-WSL>:9200/_cat/indices?v           # liste des index et leur taille
+```
+
+Le statut `yellow` est normal et attendu ici — un cluster à un seul nœud ne peut jamais assigner ses
+shards de réplique (qui nécessitent un second nœud), `green` n'est donc pas atteignable dans cette
+configuration.
+
 ---
 
 # 📈 10. Accès à Grafana
@@ -352,6 +374,10 @@ Identifiants par défaut :
   ```bash
   kubectl -n monitoring get secret monitoring-grafana -o jsonpath="{.data.admin-password}" | base64 -d ; echo
   ```
+
+<p align="center">
+  <img src="screenshots/grafana-home.png" width="90%" alt="Page d'accueil Grafana après connexion" />
+</p>
 
 ### 🔹 Dashboards inclus automatiquement
 
@@ -474,6 +500,13 @@ Identifiants par défaut (démo officielle Wazuh, communs indexer + dashboard) :
 <p align="center">
   <img src="screenshots/wazuh-dashboard.png" width="90%" alt="Dashboard Wazuh" />
 </p>
+
+### 🔹 Message "Server API upgraded" après un redéploiement
+
+Après une recréation complète du cluster (`wazuh-manager-master`/`worker` reconstruits from scratch),
+le dashboard peut afficher une notification **"Server API upgraded"** au premier chargement. C'est
+normal, pas une erreur : le dashboard détecte que l'API du manager a un état différent de celui qu'il
+avait en cache et resynchronise sa connexion. Disparaît de lui-même, aucune action requise.
 
 ### 🔹 Limitation connue : statut "Offline" sur la page Server APIs
 
