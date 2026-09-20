@@ -1,0 +1,56 @@
+# Accès HTTPS à Grafana et Elasticsearch via l'ingress-nginx du lab.
+# Les Secrets référencés ci-dessous (lab-ingress-tls, ingress-basic-auth) sont créés localement par
+# scripts/deploy-ingress.sh — ils ne sont jamais commités.
+#
+# Grafana s'authentifie lui-même. Elasticsearch (sécurité désactivée dans ce lab) est protégé par une
+# authentification basique posée devant, au niveau de l'Ingress.
+# Le dashboard Wazuh, lui, est protégé par SSO Okta : voir manifests/oauth2-proxy.yaml.
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: grafana
+  namespace: monitoring
+spec:
+  ingressClassName: nginx
+  tls:
+  - hosts:
+    - grafana.localhost
+    secretName: lab-ingress-tls
+  rules:
+  - host: grafana.localhost
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: monitoring-grafana
+            port:
+              number: 80
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: elasticsearch
+  namespace: monitoring
+  annotations:
+    nginx.ingress.kubernetes.io/auth-type: basic
+    nginx.ingress.kubernetes.io/auth-secret: ingress-basic-auth
+    nginx.ingress.kubernetes.io/auth-realm: "Elasticsearch - authentification requise"
+spec:
+  ingressClassName: nginx
+  tls:
+  - hosts:
+    - es.localhost
+    secretName: lab-ingress-tls
+  rules:
+  - host: es.localhost
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: elasticsearch
+            port:
+              number: 9200

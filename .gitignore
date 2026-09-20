@@ -16,6 +16,9 @@ wazuh/certs/indexer_cluster/*.csr
 wazuh/certs/indexer_cluster/*.srl
 wazuh/certs/dashboard_http/*.pem
 
+# Certificat TLS auto-signé de l'Ingress, généré localement (clé privée - ne jamais commit)
+ingress-certs/
+
 # OS / éditeur
 .DS_Store
 *.swp

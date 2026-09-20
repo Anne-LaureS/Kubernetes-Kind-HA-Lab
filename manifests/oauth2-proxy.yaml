@@ -1,0 +1,139 @@
+# Authentification SSO (OIDC / Okta) devant le dashboard Wazuh, via oauth2-proxy + ingress-nginx.
+#
+# ingress-nginx interroge oauth2-proxy (auth-url) pour chaque requête : sans session valide, le
+# navigateur est redirigé vers Okta, puis revient sur /oauth2/callback. La session repose sur un
+# cookie (et non sur l'en-tête Authorization), donc elle ne gêne pas le login propre à Wazuh.
+#
+# Le Secret oauth2-proxy (client-id, client-secret, cookie-secret) et l'URL de l'émetteur Okta
+# (ConfigMap oauth2-proxy-config) sont créés localement par scripts/deploy-oauth2-proxy.sh —
+# aucun identifiant n'est commité.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: oauth2-proxy
+  namespace: wazuh
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: oauth2-proxy
+  template:
+    metadata:
+      labels:
+        app: oauth2-proxy
+    spec:
+      containers:
+      - name: oauth2-proxy
+        image: quay.io/oauth2-proxy/oauth2-proxy:v7.6.0
+        args:
+        - --provider=oidc
+        - --oidc-issuer-url=$(OIDC_ISSUER_URL)
+        - --redirect-url=https://wazuh.localhost/oauth2/callback
+        - --http-address=0.0.0.0:4180
+        - --upstream=static://202
+        - --reverse-proxy=true
+        - --email-domain=*
+        - --scope=openid email profile
+        - --cookie-secure=true
+        - --cookie-expire=3h
+        - --skip-provider-button=true
+        - --code-challenge-method=S256
+        env:
+        - name: OIDC_ISSUER_URL
+          valueFrom:
+            configMapKeyRef:
+              name: oauth2-proxy-config
+              key: issuer-url
+        - name: OAUTH2_PROXY_CLIENT_ID
+          valueFrom:
+            secretKeyRef:
+              name: oauth2-proxy
+              key: client-id
+        - name: OAUTH2_PROXY_CLIENT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: oauth2-proxy
+              key: client-secret
+        - name: OAUTH2_PROXY_COOKIE_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: oauth2-proxy
+              key: cookie-secret
+        ports:
+        - containerPort: 4180
+        readinessProbe:
+          httpGet:
+            path: /ping
+            port: 4180
+        resources:
+          requests: {cpu: 10m, memory: 32Mi}
+          limits: {memory: 128Mi}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: oauth2-proxy
+  namespace: wazuh
+spec:
+  selector:
+    app: oauth2-proxy
+  ports:
+  - port: 4180
+    targetPort: 4180
+---
+# Routes /oauth2/* (start, callback, auth) de wazuh.localhost vers oauth2-proxy
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: oauth2-proxy
+  namespace: wazuh
+spec:
+  ingressClassName: nginx
+  tls:
+  - hosts:
+    - wazuh.localhost
+    secretName: lab-ingress-tls
+  rules:
+  - host: wazuh.localhost
+    http:
+      paths:
+      - path: /oauth2
+        pathType: Prefix
+        backend:
+          service:
+            name: oauth2-proxy
+            port:
+              number: 4180
+---
+# Dashboard Wazuh : toute requête doit d'abord être validée par oauth2-proxy
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: wazuh-dashboard
+  namespace: wazuh
+  annotations:
+    # Le dashboard Wazuh sert du HTTPS en interne
+    nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+    # Le premier appel du dashboard vers l'API manager peut être long sous WSL2 + Docker Desktop
+    # (voir "Limitation connue" en section 12) — le délai par défaut (60 s) est trop court.
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "300"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "300"
+    nginx.ingress.kubernetes.io/auth-url: "http://oauth2-proxy.wazuh.svc.cluster.local:4180/oauth2/auth"
+    nginx.ingress.kubernetes.io/auth-signin: "https://$host/oauth2/start?rd=$escaped_request_uri"
+spec:
+  ingressClassName: nginx
+  tls:
+  - hosts:
+    - wazuh.localhost
+    secretName: lab-ingress-tls
+  rules:
+  - host: wazuh.localhost
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: dashboard
+            port:
+              number: 443
