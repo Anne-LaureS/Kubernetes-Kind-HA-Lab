@@ -662,3 +662,10 @@ Contrairement à la pause ci-dessus, ceci **supprime définitivement** le cluste
 kind delete cluster --name kind
 docker system prune -af
 ```
+
+---
+
+## 📜 Licence
+
+Publié sous licence [MIT](LICENSE) © 2026 Anne-LaureS : réutilisation libre, à condition de conserver la
+mention de copyright. Fourni « tel quel », sans garantie.
