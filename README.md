@@ -7,6 +7,7 @@
 ![Okta](https://img.shields.io/badge/Okta-007DC1?logo=okta&logoColor=white)
 ![Grafana API](https://img.shields.io/badge/Grafana_API-F46800?logo=grafana&logoColor=white)
 ![CI](https://github.com/Anne-LaureS/Kubernetes-Kind-HA-Lab/actions/workflows/grafana-deploy.yml/badge.svg)
+[![Licence MIT](https://img.shields.io/badge/licence-MIT-green)](LICENSE)
 
 ---
 
